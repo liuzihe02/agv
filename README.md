@@ -21,7 +21,7 @@ The delivery robot is designed to:
 
 This project uses `PlatformIO` as the development environment. PlatformIO is an open-source ecosystem for IoT development, industry standard in embedded systems. We use the `PlatformIO` plugin for `VSCode`, so that we can compile and build files from `VSCode`.
 
-#### `platformio.ini`
+#### platformio
 
 Compared to a project without `platformio`, the main difference is the `platformio.ini` file which provides the key configurations for our project.
 
