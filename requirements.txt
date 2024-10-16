@@ -1,0 +1,2 @@
+#these are python requirements
+platformio
