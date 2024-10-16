@@ -1,4 +1,8 @@
+// we have to do manual library management here
 #include <Arduino.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_MotorShield.h>
 
 // // put function declarations here:
 // int myFunction(int, int);

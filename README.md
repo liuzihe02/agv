@@ -1,29 +1,33 @@
-# Delivery Robot Project
+# Autonomous Guided Vehicle for Package Delivery
 
-This project implements a prototype delivery robot designed to collect and deliver packages to residences. The robot is part of a larger automated guided vehicle (AGV) system for package pickup and delivery.
+This project implements a prototype delivery robot designed to collect and deliver packages to residences.
 
 ## Project Overview
 
 The delivery robot is designed to:
+
 - Navigate to package pickup points
 - Collect packages (up to 4 at a time)
 - Deliver packages to designated residential areas
-- Operate autonomously for 5 minutes before returning to the charging station
+- Operate autonomously for 5 minutes before returning to the starting point
 
 ## Software Implementation
 
-As the software developer for this project, my role focuses on:
 - Implementing the control algorithm
 - Developing the high-level strategy for efficient package delivery
 - Programming the robot using Arduino
 
 ### Development Environment
 
-This project uses PlatformIO as the development environment. PlatformIO is an open-source ecosystem for IoT development that simplifies the process of building Arduino projects.
+This project uses `PlatformIO` as the development environment. PlatformIO is an open-source ecosystem for IoT development, industry standard in embedded systems. We use the `PlatformIO` plugin for `VSCode`, so that we can compile and build files from `VSCode`.
 
-## Features
+#### `platformio.ini`
 
-- Autonomous navigation
-- Package collection and delivery
-- LED indicators for robot status
-- Timed operation (5-minute runs)
+Compared to a project without `platformio`, the main difference is the `platformio.ini` file which provides the key configurations for our project.
+
+- `lib_deps` parameter specifies all the libraries that we'll use in our projects
+- `upload_port` specifies which port of the computer we'll use to connect to the Arduino board, this is usually set automatically but may need to be configured depending on your system
+
+#### Importing core libraries
+
+Since we're not using the Arduino IDE, we'll have to import libraries ourselves using `#include` in the `main` file.
