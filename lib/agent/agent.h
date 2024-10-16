@@ -20,6 +20,17 @@ class Actuator;
 class Agent;
 
 /**
+ * global constants
+ */
+// total number of line sensors
+const int NUM_LINE_SENSORS = 4;
+// Pin assignments for sensors
+const int FRONT_LINE_PIN = 8;
+const int BACK_LINE_PIN = 9;
+const int LEFT_LINE_PIN = 10;
+const int RIGHT_LINE_PIN = 11;
+
+/**
  *
  * METHOD AND CLASS DECLARATIONS
  */
@@ -27,51 +38,47 @@ class Agent;
 class Sensor
 {
 public:
-    // this is the constructor
-    Sensor();
-    // this is to setup state variables after construction of the object
-    void initialize();
-    int *readLineSensors();
+    // Constructor that takes an array of pin numbers, currently only set up for 4 line sensors
+    Sensor(const int (&line_pins)[NUM_LINE_SENSORS]);
+
+    int *updateLineSensors();
 
 private:
-    // these constant variables should be fixed at the start
-    static const int NUM_LINE_SENSORS = 4;
-    // which pins go to which sensor, this is an array
-    static const int LINE_SENSOR_PINS[NUM_LINE_SENSORS];
-    // the actual values of line sensors as an array
+    // Store the pin numbers as a private member array
+    int lineSensorPins[NUM_LINE_SENSORS];
+    // The actual values of line sensors as an array
     int lineSensorValues[NUM_LINE_SENSORS];
 };
 
-class Actuator
-{
-public:
-    Actuator();
-    void initialize();
-    void move(int *lineSensorValues);
-    void stop();
+// class Actuator
+// {
+// public:
+//     Actuator();
+//     void initialize();
+//     void move(int *lineSensorValues);
+//     void stop();
 
-private:
-    // this object controls both left and right motors
-    Adafruit_MotorShield AFMS;
-    Adafruit_DCMotor *leftMotor;
-    Adafruit_DCMotor *rightMotor;
+// private:
+//     // this object controls both left and right motors
+//     Adafruit_MotorShield AFMS;
+//     Adafruit_DCMotor *leftMotor;
+//     Adafruit_DCMotor *rightMotor;
 
-    void setMotorSpeed(Adafruit_DCMotor *motor, int speed);
-};
+//     void setMotorSpeed(Adafruit_DCMotor *motor, int speed);
+// };
 
 class Agent
 {
 public:
     Agent();
-    void initialize();
     void run();
 
 private:
     Sensor sensor;
-    Actuator actuator;
-    bool isRunning;
+    // Actuator actuator;
+    // bool isRunning;
 
-    void stopAgent();
+    // void stopAgent();
 };
 
 #endif // AGENT_H

@@ -1,23 +1,24 @@
 #include "agent.h"
 
-// empty constructor
-Sensor::Sensor() {}
+// IMPLEMENTATION OF SENSOR CLASS
 
-void Sensor::initialize()
+Sensor::Sensor(const int (&line_pins)[NUM_LINE_SENSORS])
 {
+    // Copy the provided pins to the member array
     for (int i = 0; i < NUM_LINE_SENSORS; i++)
     {
-        pinMode(LINE_SENSOR_PINS[i], INPUT);
+        lineSensorPins[i] = line_pins[i];
+        // set it to the relevant pin modes
+        pinMode(lineSensorPins[i], INPUT);
     }
 }
 
-int *Sensor::readLineSensors()
+// return the array
+int *Sensor::updateLineSensors()
 {
     for (int i = 0; i < NUM_LINE_SENSORS; i++)
     {
-        lineSensorValues[i] = digitalRead(LINE_SENSOR_PINS[i]);
+        lineSensorValues[i] = digitalRead(lineSensorPins[i]);
     }
     return lineSensorValues;
 }
-
-const int Sensor::LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {2, 3, 4, 5}; // Adjust these pin numbers as needed
