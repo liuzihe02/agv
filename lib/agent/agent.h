@@ -7,6 +7,8 @@
 #include <Adafruit_MotorShield.h>
 #include <assert.h>
 
+using namespace std;
+
 /**
  * FORWARD DECLARATIONS
  * for now these 3 classes are independent.
@@ -54,22 +56,22 @@ private:
     int lineSensorValues[NUM_LINE_SENSORS];
 };
 
-// class Actuator
-// {
-// public:
-//     Actuator();
-//     void initialize();
-//     void move(int *lineSensorValues);
-//     void stop();
+class Actuator
+{
+public:
+    Actuator();
+    void setup();
+    void move(string dir);
+    void stop();
 
-// private:
-//     // this object controls both left and right motors
-//     Adafruit_MotorShield AFMS;
-//     Adafruit_DCMotor *leftMotor;
-//     Adafruit_DCMotor *rightMotor;
+private:
+    // this object controls both left and right motors
+    Adafruit_MotorShield AFMS;
+    Adafruit_DCMotor *leftMotor;
+    Adafruit_DCMotor *rightMotor;
 
-//     void setMotorSpeed(Adafruit_DCMotor *motor, int speed);
-// };
+    void setMotorSpeed(Adafruit_DCMotor *motor, int speed);
+};
 
 class Agent
 {
@@ -77,6 +79,8 @@ public:
     Agent();
     void setup();
     void run();
+    void move(int *lineSensorValues);
+
 
 private:
     Sensor sensor;
