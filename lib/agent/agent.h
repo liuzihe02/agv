@@ -6,9 +6,6 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 #include <assert.h>
-
-using namespace std;
-
 /**
  * FORWARD DECLARATIONS
  * for now these 3 classes are independent.
@@ -61,7 +58,7 @@ class Actuator
 public:
     Actuator();
     void setup();
-    void move(string dir);
+    void move(String dir);
     void stop();
 
 private:
@@ -79,7 +76,7 @@ public:
     Agent();
     void setup();
     void run();
-    void move(int *lineSensorValues);
+    void path(int *lineSensorValues);
 
 
 private:
