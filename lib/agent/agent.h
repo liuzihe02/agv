@@ -21,16 +21,25 @@ class Agent;
 /**
  * global constants
  */
+
 // total number of line sensors
 const int NUM_LINE_SENSORS = 4;
 // Pin assignments for sensors
-const int FRONT_LINE_PIN = 8;  // sensor 0
-const int BACK_LINE_PIN = 9;   // sensor 1
-const int LEFT_LINE_PIN = 10;  // sensor 2
-const int RIGHT_LINE_PIN = 11; // sensor 3
+const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
+    8,  // 0: FRONT
+    9,  // 1: BACK
+    10, // 2: LEFT
+    11  // 3: RIGHT
+};
 
+// motor pins
 const int LEFT_MOTOR_PIN = 2;
 const int RIGHT_MOTOR_PIN = 3;
+
+// push button pin
+const int PUSH_BUTTON_PIN = 5;
+// delay for the debouncing
+const unsigned long DEBOUNCE_DELAY = 50;
 
 // rate for arduino
 const int BAUD_RATE = 9600;
@@ -44,14 +53,13 @@ class Sensor
 {
 public:
     // Constructor that takes an array of pin numbers, currently only set up for 4 line sensors
-    Sensor(const int (&line_pins)[NUM_LINE_SENSORS]);
-    void Sensor::setup();
+    Sensor();
+    void setup();
 
+    // read and return the line sensor values as an array
     int *getLineReadings();
 
 private:
-    // Store the pin numbers as a private member array
-    int lineSensorPins[NUM_LINE_SENSORS];
     // The actual values of line sensors as an array
     int lineSensorValues[NUM_LINE_SENSORS];
 };
@@ -61,9 +69,11 @@ class Actuator
 public:
     Actuator();
     void setup();
-    void actClaw(); // state variables yet to be determined
+
+    // core functions
+    void actClaw(); // state variables as arguments yet to be determined
     void actMotor(String dir);
-    void stop();
+    void stopMotor();
 
 private:
     // this object controls both left and right motors
@@ -77,15 +87,21 @@ class Agent
 public:
     Agent();
     void setup();
+
+    // core functions
     void run();
+    // this function checks if the button is pressed, and if so, toggle the isRunning state
+    void toggleRunAgent();
     String path(int *lineSensorValues);
 
 private:
     Sensor sensor;
     Actuator actuator;
-    // bool isRunning;
 
-    // void stopAgent();
+    // these are to handle push button activation
+    bool isRunning;
+    // this will be returned by millis to track when the switch was last activated
+    unsigned long lastDebounceTime = 0;
 };
 
 #endif // AGENT_H

@@ -22,4 +22,5 @@ void loop()
   Serial.println("===Beginning Loop===");
   // if button pressed;
   agent->run();
+  Serial.println("===End Loop===");
 }
