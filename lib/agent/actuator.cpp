@@ -4,7 +4,7 @@
 // initialization list
 Actuator::Actuator() : AFMS(), leftMotor(nullptr), rightMotor(nullptr)
 {
-    Serial.println("Actuator instantiated");
+    Serial.println("Actuator instantiated!");
 }
 
 // setup code

@@ -77,7 +77,8 @@ public:
     Agent();
     void setup();
     void run();
-    void path(int *lineSensorValues);
+    // this uses lineSensorValues to determine the appropriate direction, as a String
+    String getDirection(int *lineSensorValues);
 
 private:
     Sensor sensor;
