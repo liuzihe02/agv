@@ -10,6 +10,11 @@
  * FORWARD DECLARATIONS
  * for now these 3 classes are independent.
  * Agent class uses both sensors and actuators
+ *
+ * Some background from Reinforcement Learning:
+ * Given the environment, sensors collect the relevant state variables from the environment
+ * Policies takes in these state variables, and chooses an appropriate action
+ * Actuators then executes these actions in the real world
  */
 
 // receives environment data
@@ -19,7 +24,7 @@ class Actuator;
 class Agent;
 
 /**
- * global constants
+ * GLOBAL CONSTANTS
  */
 
 // total number of line sensors
@@ -72,6 +77,7 @@ public:
 
     // core functions
     void actClaw(); // state variables as arguments yet to be determined
+    // this is a single time step, which instructs the robots on how to move
     void actMotor(String dir);
     void stopMotor();
 
@@ -90,13 +96,15 @@ public:
 
     // core functions
     void run();
-    // this function checks if the button is pressed, and if so, toggle the isRunning state
-    void toggleRunAgent();
-    String path(int *lineSensorValues);
 
 private:
     Sensor sensor;
     Actuator actuator;
+
+    // this function checks if the button is pressed, and if so, toggle the isRunning state
+    void toggleRunAgent();
+    // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
+    String policyMotor(int *lineSensorValues);
 
     // these are to handle push button activation
     bool isRunning;

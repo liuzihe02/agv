@@ -1,7 +1,8 @@
 #include "Agent.h"
-// ideally, leftMotor object is a nullptr here
-// constructor for Actuator
-// initialization list
+
+// IMPLEMENTATION OF ACTUATOR CLASS
+
+// constructor for Actuator with an initialization list
 Actuator::Actuator() : AFMS(), leftMotor(nullptr), rightMotor(nullptr)
 {
     Serial.println("Actuator instantiated!");
@@ -75,7 +76,7 @@ void Actuator::actMotor(String dir)
         rightMotor->run(BACKWARD);
         rightMotor->setSpeed(150);
     }
-    Serial.println("No direction specifiied!");
+    Serial.println("No direction specified!");
 }
 void Actuator::stopMotor()
 {
