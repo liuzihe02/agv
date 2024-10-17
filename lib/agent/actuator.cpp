@@ -1,70 +1,51 @@
-#include "agent.h"
+#include "Agent.h"
+//ideally, leftMotor object is a nullptr here
+//constructor
+Actuator::Actuator() : AFMS(), leftMotor(nullptr), rightMotor(nullptr) {}
 
-// IMPLEMENTATION OF ACTUATOR CLASS
-
-Actuator::Actuator() : AFMS(Adafruit_MotorShield()) {
-    leftMotor = AFMS.getMotor(1);  // Assuming left motor is connected to M1
-    rightMotor = AFMS.getMotor(2); // Assuming right motor is connected to M2
-}
-
-void Actuator::initialize() {
-    Serial.println("Initializing Actuator...");
-    
+//setup code
+void Actuator::setup() {
+    AFMS = Adafruit_MotorShield();
     if (!AFMS.begin()) {
         Serial.println("Could not find Motor Shield. Check wiring.");
         while (1);
     }
-    
-    Serial.println("Motor Shield found.");
-    
-    // Initialize motors
-    leftMotor->setSpeed(0);
-    rightMotor->setSpeed(0);
-    leftMotor->run(RELEASE);
-    rightMotor->run(RELEASE);
-    
-    Serial.println("Actuator initialized.");
+    leftMotor = AFMS.getMotor(2);
+    rightMotor = AFMS.getMotor(3);
+    if (!leftMotor || !rightMotor) {
+        Serial.println("Motor attachment failed. Check wiring.");
+        while (1);
+    }
 }
-
-void Actuator::move(int* lineSensorValues) {
-    // Simple line following logic
-    // Assuming: 0 = white (off the line), 1 = black (on the line)
-    // lineSensorValues array: [FRONT, BACK, LEFT, RIGHT]
-    
-    if (lineSensorValues[2] == 1 && lineSensorValues[3] == 0) {
-        // Turn left
-        setMotorSpeed(leftMotor, 50);
-        setMotorSpeed(rightMotor, 200);
-    }
-    else if (lineSensorValues[2] == 0 && lineSensorValues[3] == 1) {
-        // Turn right
-        setMotorSpeed(leftMotor, 200);
-        setMotorSpeed(rightMotor, 50);
-    }
-    else if (lineSensorValues[0] == 1) {
-        // Go straight
+void Actuator::move(String dir) {
+    if (dir == "forward") {
         setMotorSpeed(leftMotor, 200);
         setMotorSpeed(rightMotor, 200);
-    }
-    else {
-        // Stop if no line detected
+    } else if (dir == "backward") {
+        setMotorSpeed(leftMotor, -200);
+        setMotorSpeed(rightMotor, -200);
+    } else if (dir == "left") {
+        setMotorSpeed(leftMotor, -150);
+        setMotorSpeed(rightMotor, 150);
+    } else if (dir == "right") {
+        setMotorSpeed(leftMotor, 150);
+        setMotorSpeed(rightMotor, -150);
+    } else {
         stop();
     }
 }
-
 void Actuator::stop() {
-    leftMotor->run(RELEASE);
-    rightMotor->run(RELEASE);
+    setMotorSpeed(leftMotor, 0);
+    setMotorSpeed(rightMotor, 0);
 }
 
-void Actuator::setMotorSpeed(Adafruit_DCMotor* motor, int speed) {
-    motor->setSpeed(speed);
-    if (speed > 0) {
-        motor->run(FORWARD);
-    } else if (speed < 0) {
+//this is for a SINGLE motor
+void Actuator::setMotorSpeed(Adafruit_DCMotor *motor, int speed) {
+    if (speed < 0) {
         motor->run(BACKWARD);
         motor->setSpeed(-speed);
     } else {
-        motor->run(RELEASE);
+        motor->run(FORWARD);
+        motor->setSpeed(speed);
     }
 }
