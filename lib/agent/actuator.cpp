@@ -43,7 +43,7 @@ void Actuator::setup()
 
     Serial.println("Actuator setup complete");
 }
-void Actuator::move(String dir)
+void Actuator::actMotor(String dir)
 {
     if (dir == "forward")
     {
