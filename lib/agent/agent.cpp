@@ -35,5 +35,9 @@ void Agent::run()
     // Add a delay to make the output readable
     delay(1000);
 
-    actuator.move("forward");
+    actuator.actMotor("forward");
+}
+
+String Agent::path(int *lineSensorValues) //Claude logic
+{
 }

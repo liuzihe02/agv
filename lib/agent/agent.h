@@ -61,7 +61,8 @@ class Actuator
 public:
     Actuator();
     void setup();
-    void move(String dir);
+    void actClaw(); //state variables yet to be determined
+    void actMotor(String dir);
     void stop();
 
 private:
@@ -77,7 +78,7 @@ public:
     Agent();
     void setup();
     void run();
-    void path(int *lineSensorValues);
+    String path(int *lineSensorValues);
 
 private:
     Sensor sensor;
