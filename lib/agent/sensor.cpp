@@ -21,6 +21,7 @@ void Sensor::setup()
         // set it to the relevant pin modes
         pinMode(lineSensorPins[i], INPUT);
     }
+    Serial.println("Sensor setup complete");
 }
 
 // return the array

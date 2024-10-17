@@ -69,8 +69,6 @@ private:
     Adafruit_MotorShield AFMS;
     Adafruit_DCMotor *leftMotor;
     Adafruit_DCMotor *rightMotor;
-
-    void setMotorSpeed(Adafruit_DCMotor *motor, int speed);
 };
 
 class Agent

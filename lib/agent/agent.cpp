@@ -13,6 +13,8 @@ void Agent::setup()
 {
     // calls the sensor and actuator setup
     sensor.setup();
+    actuator.setup();
+    Serial.println("Agent setup complete");
 }
 
 void Agent::run()
@@ -22,13 +24,13 @@ void Agent::run()
 
     // Print the sensor values
     Serial.println("Sensor Values:");
-    for (int i = 0; i < NUM_LINE_SENSORS; i++)
-    {
-        Serial.print("Sensor ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(sensorValues[i]);
-    }
+    // for (int i = 0; i < NUM_LINE_SENSORS; i++)
+    // {
+    //     Serial.print("Sensor ");
+    //     Serial.print(i);
+    //     Serial.print(": ");
+    //     Serial.println(sensorValues[i]);
+    // }
 
     // Add a delay to make the output readable
     delay(1000);
