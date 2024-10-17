@@ -3,22 +3,22 @@
 
 // IMPLEMENTATION OF AGENT CLASS
 
-//this initializes a sensor class too
-Agent::Agent(): sensor({FRONT_LINE_PIN, BACK_LINE_PIN, LEFT_LINE_PIN, RIGHT_LINE_PIN})
+// this initializes a sensor class too
+Agent::Agent() : sensor({FRONT_LINE_PIN, BACK_LINE_PIN, LEFT_LINE_PIN, RIGHT_LINE_PIN})
 {
     Serial.println("Agent instantiated!");
 }
 
-void Agent::setup() 
+void Agent::setup()
 {
-    //calls the sensor and actuator setup
+    // calls the sensor and actuator setup
     sensor.setup();
 }
 
 void Agent::run()
 {
     // Get the updated sensor values
-    int *sensorValues = sensor.updateLineSensors();
+    int *sensorValues = sensor.getLineReadings();
 
     // Print the sensor values
     Serial.println("Sensor Values:");
@@ -32,4 +32,6 @@ void Agent::run()
 
     // Add a delay to make the output readable
     delay(1000);
+
+    actuator.move("forward");
 }

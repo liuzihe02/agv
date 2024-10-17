@@ -24,7 +24,7 @@ void Sensor::setup()
 }
 
 // return the array
-int *Sensor::updateLineSensors()
+int *Sensor::getLineReadings()
 {
     for (int i = 0; i < NUM_LINE_SENSORS; i++)
     {

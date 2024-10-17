@@ -24,15 +24,15 @@ class Agent;
 // total number of line sensors
 const int NUM_LINE_SENSORS = 4;
 // Pin assignments for sensors
-const int FRONT_LINE_PIN = 8; //sensor 0 
-const int BACK_LINE_PIN = 9; //sensor 1
-const int LEFT_LINE_PIN = 10; //sensor 2
-const int RIGHT_LINE_PIN = 11; //sensor 3
+const int FRONT_LINE_PIN = 8;  // sensor 0
+const int BACK_LINE_PIN = 9;   // sensor 1
+const int LEFT_LINE_PIN = 10;  // sensor 2
+const int RIGHT_LINE_PIN = 11; // sensor 3
 
-const int LEFT_MOTOR_PIN=2;
-const int RIGHT_MOTOR_PIN=3;
+const int LEFT_MOTOR_PIN = 2;
+const int RIGHT_MOTOR_PIN = 3;
 
-//rate for arduino
+// rate for arduino
 const int BAUD_RATE = 9600;
 
 /**
@@ -47,7 +47,7 @@ public:
     Sensor(const int (&line_pins)[NUM_LINE_SENSORS]);
     void Sensor::setup();
 
-    int *updateLineSensors();
+    int *getLineReadings();
 
 private:
     // Store the pin numbers as a private member array
@@ -81,10 +81,9 @@ public:
     void run();
     void path(int *lineSensorValues);
 
-
 private:
     Sensor sensor;
-    // Actuator actuator;
+    Actuator actuator;
     // bool isRunning;
 
     // void stopAgent();

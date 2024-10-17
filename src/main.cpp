@@ -5,24 +5,21 @@
 #include <Adafruit_MotorShield.h>
 #include <agent.h>
 
-
-
-//this declares agent as a globally accessible variable, not instantiated yet
-Agent* agent = nullptr;
+// this declares agent as a globally accessible variable, not instantiated yet
+Agent *agent = nullptr;
 
 void setup()
 {
-  Serial.begin(9600);
-  delay(100);
-  //actually declare Agent
+  Serial.begin(BAUD_RATE);
+  // actually declare Agent
   agent = new Agent();
   agent->setup();
+  Serial.println("Setup code complete");
 }
 
 void loop()
 {
-  Serial.print("Hello");
-  delay(1000);
+  Serial.print("Beginning Loop");
   // if button pressed;
   agent->run();
 }
