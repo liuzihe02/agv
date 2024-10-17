@@ -12,11 +12,15 @@ Agent agent;
 
 void setup()
 {
-  agent.setup();
+  Serial.begin(9600);
+  delay(100);
+  //agent.setup();
 }
 
 void loop()
 {
+  Serial.print("Hello");
+  delay(1000);
   // if button pressed;
-  agent.run();
+  //agent.run();
 }
