@@ -29,6 +29,9 @@ const int BACK_LINE_PIN = 9; //sensor 1
 const int LEFT_LINE_PIN = 10; //sensor 2
 const int RIGHT_LINE_PIN = 11; //sensor 3
 
+const int LEFT_MOTOR_PIN=2;
+const int RIGHT_MOTOR_PIN=3;
+
 //rate for arduino
 const int BAUD_RATE = 9600;
 
