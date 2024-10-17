@@ -11,6 +11,23 @@ Sensor::Sensor(const int (&line_pins)[NUM_LINE_SENSORS])
         // set it to the relevant pin modes
         pinMode(lineSensorPins[i], INPUT);
     }
+
+    // Initialize Serial communication in the constructor
+    Serial.begin(BAUD_RATE);
+    while (!Serial)
+    {
+        ; // wait for serial port to connect. Needed for native USB
+    }
+    Serial.println("Sensor instantiated!");
+}
+
+void Sensor::setup()
+{
+    for (int i = 0; i < NUM_LINE_SENSORS; i++)
+    {
+        // set it to the relevant pin modes
+        pinMode(lineSensorPins[i], INPUT);
+    }
 }
 
 // return the array

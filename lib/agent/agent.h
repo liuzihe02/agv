@@ -30,6 +30,9 @@ const int BACK_LINE_PIN = 9; //sensor 1
 const int LEFT_LINE_PIN = 10; //sensor 2
 const int RIGHT_LINE_PIN = 11; //sensor 3
 
+//rate for arduino
+const int BAUD_RATE = 9600;
+
 /**
  *
  * METHOD AND CLASS DECLARATIONS
@@ -40,6 +43,7 @@ class Sensor
 public:
     // Constructor that takes an array of pin numbers, currently only set up for 4 line sensors
     Sensor(const int (&line_pins)[NUM_LINE_SENSORS]);
+    void Sensor::setup();
 
     int *updateLineSensors();
 
@@ -71,6 +75,7 @@ class Agent
 {
 public:
     Agent();
+    void setup();
     void run();
 
 private:

@@ -3,15 +3,22 @@
 
 // IMPLEMENTATION OF AGENT CLASS
 
-Agent::Agent() : sensor({FRONT_LINE_PIN, BACK_LINE_PIN, LEFT_LINE_PIN, RIGHT_LINE_PIN})
+//this initializes a sensor class too
+Agent::Agent(): sensor({FRONT_LINE_PIN, BACK_LINE_PIN, LEFT_LINE_PIN, RIGHT_LINE_PIN})
 {
     // Initialize Serial communication in the constructor
-    Serial.begin(9600);
+    Serial.begin(BAUD_RATE);
     while (!Serial)
     {
         ; // wait for serial port to connect. Needed for native USB
     }
-    Serial.println("Agent initialized");
+    Serial.println("Agent instantiated!");
+}
+
+void Agent::setup() 
+{
+    //calls the sensor and actuator setup
+    sensor.setup();
 }
 
 void Agent::run()
