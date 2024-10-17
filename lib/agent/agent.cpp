@@ -21,7 +21,7 @@ void Agent::run()
 
     // Print the sensor values
     Serial.println("Sensor Values:");
-    for (int i = 0; i < Sensor::NUM_LINE_SENSORS; i++)
+    for (int i = 0; i < NUM_LINE_SENSORS; i++)
     {
         Serial.print("Sensor ");
         Serial.print(i);

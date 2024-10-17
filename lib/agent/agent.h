@@ -25,10 +25,10 @@ class Agent;
 // total number of line sensors
 const int NUM_LINE_SENSORS = 4;
 // Pin assignments for sensors
-const int FRONT_LINE_PIN = 8;
-const int BACK_LINE_PIN = 9;
-const int LEFT_LINE_PIN = 10;
-const int RIGHT_LINE_PIN = 11;
+const int FRONT_LINE_PIN = 8; //sensor 0 
+const int BACK_LINE_PIN = 9; //sensor 1
+const int LEFT_LINE_PIN = 10; //sensor 2
+const int RIGHT_LINE_PIN = 11; //sensor 3
 
 /**
  *
