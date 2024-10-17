@@ -7,14 +7,16 @@
 
 
 
-//instantiate agent, all setup is done here for now
-Agent agent;
+//this declares agent as a globally accessible variable, not instantiated yet
+Agent* agent = nullptr;
 
 void setup()
 {
   Serial.begin(9600);
   delay(100);
-  //agent.setup();
+  //actually declare Agent
+  agent = new Agent();
+  agent->setup();
 }
 
 void loop()
@@ -22,5 +24,5 @@ void loop()
   Serial.print("Hello");
   delay(1000);
   // if button pressed;
-  //agent.run();
+  agent->run();
 }
