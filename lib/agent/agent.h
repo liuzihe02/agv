@@ -44,7 +44,7 @@ const int RIGHT_MOTOR_PIN = 3;
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
 // delay for the debouncing
-const unsigned long DEBOUNCE_DELAY = 1000;
+const unsigned long DEBOUNCE_DELAY = 500;
 
 // rate for arduino
 const int BAUD_RATE = 9600;

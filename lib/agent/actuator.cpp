@@ -30,20 +30,6 @@ void Actuator::setup()
             ;
     }
 
-    // should be unneccessary
-
-    // // Set the speed to start, from 0 (off) to 255 (max speed)
-    // leftMotor->setSpeed(150);
-    // leftMotor->run(FORWARD);
-    // // turn on motor
-    // leftMotor->run(RELEASE);
-
-    // // Set the speed to start, from 0 (off) to 255 (max speed)
-    // rightMotor->setSpeed(150);
-    // rightMotor->run(FORWARD);
-    // // turn on motor
-    // rightMotor->run(RELEASE);
-
     Serial.println("Actuator setup complete");
 }
 void Actuator::actMotor(String dir)

@@ -42,7 +42,7 @@ void Agent::run()
         int *lineSensorValues = sensor.getLineReadings();
 
         // Print the sensor values
-        Serial.println("Moving Motor: Sensor Values:");
+        Serial.println("Moving Motor. The Sensor Values are:");
         Serial.print("Front: ");
         Serial.print(lineSensorValues[0]);
         Serial.print(", Back: ");
@@ -52,15 +52,13 @@ void Agent::run()
         Serial.print(", Right: ");
         Serial.println(lineSensorValues[3]);
 
-        // String motorDirection = policyMotor(lineSensorValues);
+        String motorDirection = policyMotor(lineSensorValues);
 
-        // actuator.actMotor(motorDirection);
-
-        actuator.actMotor("forward");
+        actuator.actMotor(motorDirection);
     }
 
-    // Add a delay to make the output readable
-    delay(2000);
+    // // Add a delay to make the output readable
+    // delay(2000);
 }
 
 /**
