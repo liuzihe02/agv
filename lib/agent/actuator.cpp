@@ -54,6 +54,7 @@ void Actuator::actMotor(String dir)
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(200);
+        return;
     }
     else if (dir == "backward")
     {
@@ -61,6 +62,7 @@ void Actuator::actMotor(String dir)
         leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
         rightMotor->setSpeed(200);
+        return;
     }
     else if (dir == "left")
     {
@@ -68,6 +70,7 @@ void Actuator::actMotor(String dir)
         leftMotor->setSpeed(150);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(150);
+        return;
     }
     else if (dir == "right")
     {
@@ -75,8 +78,10 @@ void Actuator::actMotor(String dir)
         leftMotor->setSpeed(150);
         rightMotor->run(BACKWARD);
         rightMotor->setSpeed(150);
+        return;
     }
     Serial.println("No direction specified!");
+    return;
 }
 void Actuator::stopMotor()
 {

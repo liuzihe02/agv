@@ -44,7 +44,7 @@ const int RIGHT_MOTOR_PIN = 3;
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
 // delay for the debouncing
-const unsigned long DEBOUNCE_DELAY = 50;
+const unsigned long DEBOUNCE_DELAY = 1000;
 
 // rate for arduino
 const int BAUD_RATE = 9600;
@@ -109,7 +109,7 @@ private:
     // these are to handle push button activation
     bool isRunning;
     // this will be returned by millis to track when the switch was last activated
-    unsigned long lastDebounceTime = 0;
+    unsigned long lastDebounceTime;
 };
 
 #endif // AGENT_H

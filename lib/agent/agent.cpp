@@ -18,6 +18,8 @@ void Agent::setup()
     // calls the sensor and actuator setup
     sensor.setup();
     actuator.setup();
+    this->isRunning = false;
+    this->lastDebounceTime = 0;
     Serial.println("Agent setup complete");
 }
 
@@ -28,31 +30,37 @@ void Agent::run()
     // isRunning is a private instance variable
     if (!isRunning)
     {
+        Serial.println("Motor has stopped");
         actuator.stopMotor();
         // stop running if the status is false
         return;
     }
+    // continue running
+    else
+    {
+        // Get the updated sensor values
+        int *lineSensorValues = sensor.getLineReadings();
 
-    // Get the updated sensor values
-    int *lineSensorValues = sensor.getLineReadings();
+        // Print the sensor values
+        Serial.println("Moving Motor: Sensor Values:");
+        Serial.print("Front: ");
+        Serial.print(lineSensorValues[0]);
+        Serial.print(", Back: ");
+        Serial.print(lineSensorValues[1]);
+        Serial.print(", Left: ");
+        Serial.print(lineSensorValues[2]);
+        Serial.print(", Right: ");
+        Serial.println(lineSensorValues[3]);
 
-    // Print the sensor values
-    Serial.println("Sensor Values:");
-    Serial.print("Front: ");
-    Serial.print(lineSensorValues[0]);
-    Serial.print(", Back: ");
-    Serial.print(lineSensorValues[1]);
-    Serial.print(", Left: ");
-    Serial.print(lineSensorValues[2]);
-    Serial.print(", Right: ");
-    Serial.println(lineSensorValues[3]);
+        // String motorDirection = policyMotor(lineSensorValues);
 
-    String motorDirection = policyMotor(lineSensorValues);
+        // actuator.actMotor(motorDirection);
 
-    actuator.actMotor(motorDirection);
+        actuator.actMotor("forward");
+    }
 
     // Add a delay to make the output readable
-    delay(1000);
+    delay(2000);
 }
 
 /**
@@ -63,12 +71,14 @@ void Agent::run()
  */
 void Agent::toggleRunAgent()
 {
-    // check if the new button press and the old button press has a significant time difference
-    if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY)
+    // TODO: not sure if this is LOW or HIGH
+    if (digitalRead(PUSH_BUTTON_PIN) == HIGH)
+
     {
-        // TODO: not sure if this is LOW or HIGH
-        if (digitalRead(PUSH_BUTTON_PIN) == HIGH)
+        // check if the new button press and the old button press has a significant time difference
+        if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY)
         {
+            Serial.println("TOGGLE ACTIVATED");
             // toggle the state of isRunning
             isRunning = !isRunning;
             lastDebounceTime = millis();
