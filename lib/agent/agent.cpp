@@ -119,27 +119,35 @@ String Agent::policyMotor(int *lineSensorValues)
     // |- junction (always go front)
     if (frontLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        return "forward";
+        return "right";
     }
 
     // -| junction (always go front)
     if (frontLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        return "forward";
+        return "left";
     }
 
-    // Left turn
+    // Left turn, regardless of back sensor
     if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         return "left";
     }
+    if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
+    {
+        return "left";
+    }
 
-    // right turn
+    // right turn, regardless of back sensor
     if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    {
+        return "right";
+    }
+    if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 0)
     {
         return "right";
     }
 
     // If none of the above conditions are met, implement error correction
-    return "right"; // Keep turning right until it finds a line
+    return "forward"; // Keep turning right until it finds a line
 }

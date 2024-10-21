@@ -69,12 +69,14 @@ void Actuator::actMotor(String dir)
     //  }
 
     // the current version only works with FORWARD and BACKWARDS inverted
+    // delay here causes it to turn after it detects the T junctions
     if (dir == "forward")
     {
         leftMotor->run(BACKWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
         rightMotor->setSpeed(200);
+        // delay(100);
         return;
     }
     else if (dir == "backward")
@@ -83,22 +85,32 @@ void Actuator::actMotor(String dir)
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(200);
+        // delay(100);
         return;
     }
     else if (dir == "left")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(150);
+        leftMotor->setSpeed(100);
+        // leftMotor->run(RELEASE);
+        // leftMotor->setSpeed(0);
+
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(150);
+        rightMotor->setSpeed(100);
+        // delay(100);
         return;
     }
     else if (dir == "right")
     {
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(150);
+        leftMotor->setSpeed(100);
+
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(150);
+        rightMotor->setSpeed(100);
+        // rightMotor->run(RELEASE);
+        // rightMotor->setSpeed(0);
+
+        // delay(100);
         return;
     }
 
