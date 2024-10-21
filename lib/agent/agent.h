@@ -38,8 +38,8 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 };
 
 // motor pins
-const int LEFT_MOTOR_PIN = 2;
-const int RIGHT_MOTOR_PIN = 3;
+const int LEFT_MOTOR_PIN = 3;
+const int RIGHT_MOTOR_PIN = 2;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
