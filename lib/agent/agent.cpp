@@ -100,7 +100,7 @@ String Agent::policyMotor(int *lineSensorValues)
     // when it meets a left turn, turn left
     // when it meets a right turn, go right
 
-    // else: error correction - keep going in a circle right until it magically finds itself on a straight line path
+    // else: error correction - keep going straight until back sensor is on the line again. 
 
     // Assuming 1 means the sensor detects a line, and 0 means it doesn't
 
@@ -119,35 +119,42 @@ String Agent::policyMotor(int *lineSensorValues)
     // |- junction (always go front)
     if (frontLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        return "right";
+        return "leftTurn";
     }
 
     // -| junction (always go front)
     if (frontLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        return "left";
+        return "rightTurn";
     }
 
     // Left turn, regardless of back sensor
-    if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
+    if (frontLine == 0 && leftLine == 1 && rightLine == 0 )
     {
         return "left";
     }
-    if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
-    {
-        return "left";
-    }
+
+    // if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
+    // {
+    //     return "left";
+    // }
 
     // right turn, regardless of back sensor
-    if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    if (frontLine == 0 && leftLine == 0 && rightLine == 1)
     {
         return "right";
     }
-    if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 0)
+    // redundant "backline variable"
+    // if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 0)
+    // {
+    //     return "right";
+    // }
+
+    else if (backLine == 1) // If none of the above conditions are met, implement error correction
     {
-        return "right";
+        return "continue"; // Continue previous action (should be a turn in either direction)
     }
 
-    // If none of the above conditions are met, implement error correction
+    // Otherwise if back is off, keep moving forward until backLine is back on the line
     return "forward"; // Keep turning right until it finds a line
 }

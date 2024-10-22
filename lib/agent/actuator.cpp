@@ -103,16 +103,35 @@ void Actuator::actMotor(String dir)
     else if (dir == "right")
     {
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(150);
 
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(150);
+
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
 
         // delay(100);
         return;
     }
+
+    else if (dir == "continue")
+    {
+        //continue what it was doing previously. 
+    }
+
+    else if (dir == "rightTurn")
+    {           
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(100);
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(100);
+        delay(1500);
+        leftMotor->run(BACKWARD);
+        rightMotor->run(FORWARD);
+        delay(2000);
+    }
+
 
     Serial.println("No direction specified!");
     return;

@@ -6,6 +6,7 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 #include <assert.h>
+
 /**
  * FORWARD DECLARATIONS
  * for now these 3 classes are independent.
@@ -105,6 +106,9 @@ private:
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
     String policyMotor(int *lineSensorValues);
+    
+    // Turning function
+    String turn(int *lineSensorValues);
 
     // these are to handle push button activation
     bool isRunning;
