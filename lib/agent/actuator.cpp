@@ -32,7 +32,28 @@ void Actuator::setup()
 
     Serial.println("Actuator setup complete");
 }
-void Actuator::actMotor(String dir)
+void Actuator::actMotor(String policy)
+{
+    Serial.println("Policy is currently ");
+    Serial.println(policy);
+
+    if (policy.startsWith("step"))
+    {
+        actMotorStep(policy);
+    }
+
+    else if (policy.startsWith("turn"))
+    {
+        actMotorTurn(policy);
+    }
+
+    else
+    {
+        Serial.println("No correct policy specified");
+    }
+}
+
+void Actuator::actMotorStep(String policy)
 {
     // this is the correct version
     //  if (dir == "forward")
@@ -70,25 +91,23 @@ void Actuator::actMotor(String dir)
 
     // the current version only works with FORWARD and BACKWARDS inverted
     // delay here causes it to turn after it detects the T junctions
-    if (dir == "forward")
+    if (policy == "step_forward")
     {
         leftMotor->run(BACKWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
         rightMotor->setSpeed(200);
-        // delay(100);
         return;
     }
-    else if (dir == "backward")
+    else if (policy == "step_backward")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(200);
-        // delay(100);
         return;
     }
-    else if (dir == "left")
+    else if (policy == "step_left")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(100);
@@ -97,10 +116,9 @@ void Actuator::actMotor(String dir)
 
         rightMotor->run(BACKWARD);
         rightMotor->setSpeed(100);
-        // delay(100);
         return;
     }
-    else if (dir == "right")
+    else if (policy == "step_right")
     {
         leftMotor->run(BACKWARD);
         leftMotor->setSpeed(100);
@@ -109,14 +127,48 @@ void Actuator::actMotor(String dir)
         rightMotor->setSpeed(100);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
-
-        // delay(100);
         return;
     }
 
-    Serial.println("No direction specified!");
+    // thers an error here
+    Serial.println("No correct step policy specified!");
     return;
 }
+
+void Actuator::actMotorTurn(String policy)
+{
+    if (policy == "turn_left")
+    {
+        // go forward and delay
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(150);
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(150);
+        delay(1500);
+
+        // turn left and delay, same speed
+        leftMotor->run(FORWARD);
+        rightMotor->run(BACKWARD);
+        delay(2000);
+        return;
+    }
+    else if (policy == "turn_right")
+    {
+        // go forward and delay
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(150);
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(150);
+        delay(1500);
+
+        // turn right and delay, same speed
+        leftMotor->run(BACKWARD);
+        rightMotor->run(FORWARD);
+        delay(2000);
+        return;
+    }
+}
+
 void Actuator::stopMotor()
 {
     leftMotor->run(RELEASE);

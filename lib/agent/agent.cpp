@@ -35,6 +35,7 @@ void Agent::run()
         // stop running if the status is false
         return;
     }
+
     // continue running
     else
     {
@@ -107,47 +108,47 @@ String Agent::policyMotor(int *lineSensorValues)
     // Check if it's on a straight line
     if (frontLine == 1 && backLine == 1 && leftLine == 0 && rightLine == 0)
     {
-        return "forward";
+        return "step_forward";
     }
 
     // T junction (always go right)
     if (frontLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        return "right";
+        return "turn_right";
     }
 
     // |- junction (always go front)
     if (frontLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        return "right";
+        return "turn_right";
     }
 
     // -| junction (always go front)
     if (frontLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        return "left";
+        return "turn_left";
     }
 
     // Left turn, regardless of back sensor
     if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        return "left";
+        return "step_left";
     }
     if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
     {
-        return "left";
+        return "step_left";
     }
 
     // right turn, regardless of back sensor
     if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        return "right";
+        return "step_right";
     }
     if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 0)
     {
-        return "right";
+        return "step_right";
     }
 
     // If none of the above conditions are met, implement error correction
-    return "forward"; // Keep turning right until it finds a line
+    return "step_forward"; // Keep going forward until it finds a line
 }

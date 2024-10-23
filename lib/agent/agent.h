@@ -1,3 +1,5 @@
+
+
 // these are header guards to prevent multiple inclusions of the same header file
 #ifndef AGENT_H
 #define AGENT_H
@@ -6,6 +8,7 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 #include <assert.h>
+
 /**
  * FORWARD DECLARATIONS
  * for now these 3 classes are independent.
@@ -77,8 +80,9 @@ public:
 
     // core functions
     void actClaw(); // state variables as arguments yet to be determined
-    // this is a single time step, which instructs the robots on how to move
-    void actMotor(String dir);
+    // this wrapper function basically calls the actual actMotor functions to move the thing
+    // just directs which one to call
+    void actMotor(String policy);
     void stopMotor();
 
 private:
@@ -86,6 +90,13 @@ private:
     Adafruit_MotorShield AFMS;
     Adafruit_DCMotor *leftMotor;
     Adafruit_DCMotor *rightMotor;
+
+    // actMotor will call these functions
+
+    // a single step without any delay
+    void actMotorStep(String policy);
+    // try to get it to make a complete turn
+    void actMotorTurn(String policy);
 };
 
 class Agent
