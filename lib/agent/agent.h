@@ -41,8 +41,11 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 };
 
 // motor pins
-const int LEFT_MOTOR_PIN = 3;
-const int RIGHT_MOTOR_PIN = 2;
+const int LEFT_MOTOR_PIN = 2;
+const int RIGHT_MOTOR_PIN = 3;
+
+// claw pin
+const int CLAW_PIN = 13;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
@@ -116,6 +119,8 @@ private:
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
     String policyMotor(int *lineSensorValues);
+    // policy for claw
+    String policyClaw(int *lineSensorValues);
 
     // these are to handle push button activation
     bool isRunning;

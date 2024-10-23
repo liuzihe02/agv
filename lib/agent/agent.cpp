@@ -53,9 +53,8 @@ void Agent::run()
         Serial.print(", Right: ");
         Serial.println(lineSensorValues[3]);
 
-        String motorDirection = policyMotor(lineSensorValues);
-
-        actuator.actMotor(motorDirection);
+        String motorPolicy = policyMotor(lineSensorValues);
+        actuator.actMotor(motorPolicy);
     }
 
     // // Add a delay to make the output readable
@@ -149,6 +148,16 @@ String Agent::policyMotor(int *lineSensorValues)
         return "step_right";
     }
 
+    else if (backLine == 1)
+    {
+        return "continue";
+    }
     // If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
+}
+
+String policyClaw(int *lineSensorValues)
+{
+    if lineSensorValues
+        [0] == 0 : return "claw"
 }
