@@ -117,7 +117,7 @@ void Actuator::actMotor(String dir)
 
     else if (dir == "continue")
     {
-        //continue what it was doing previously. 
+        return;//continue what it was doing previously. 
     }
 
     else if (dir == "rightTurn")
@@ -130,6 +130,7 @@ void Actuator::actMotor(String dir)
         leftMotor->run(BACKWARD);
         rightMotor->run(FORWARD);
         delay(2000);
+        return;
     }
 
 
