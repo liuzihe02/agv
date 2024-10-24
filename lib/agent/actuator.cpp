@@ -30,8 +30,15 @@ void Actuator::setup()
             ;
     }
 
+    // set up actuator
+    clawServo.attach(CLAW_PIN);
+    // initialize to zero position
+    clawPos = 0;
+
+    // setup for actuators complete
     Serial.println("Actuator setup complete");
 }
+
 void Actuator::actMotor(String policy)
 {
     Serial.println("Policy is currently ");
@@ -179,4 +186,26 @@ void Actuator::stopMotor()
 {
     leftMotor->run(RELEASE);
     rightMotor->run(RELEASE);
+}
+
+void Actuator::actClaw(String policy)
+{
+    if (policy == "grab")
+    {
+        for (clawPos = 0; clawPos <= 180; clawPos += 1)
+        { // goes from 0 degrees to 180 degrees
+            // in steps of 1 degree
+            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+            delay(15);                // waits 15 ms for the servo to reach the position
+        }
+    }
+    else if (policy == "release")
+    {
+        for (clawPos = 180; clawPos <= 0; clawPos -= 1)
+        { // goes from 180 to 0
+            // in steps of 1 degree
+            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+            delay(15);                // waits 15 ms for the servo to reach the position
+        }
+    }
 }

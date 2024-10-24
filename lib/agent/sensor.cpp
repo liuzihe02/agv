@@ -19,11 +19,13 @@ void Sensor::setup()
 }
 
 // return the array
-int *Sensor::getLineReadings()
+int *Sensor::getLineSensorReadings()
 {
+    // initialize this here
     for (int i = 0; i < NUM_LINE_SENSORS; i++)
     {
         lineSensorValues[i] = digitalRead(LINE_SENSOR_PINS[i]);
     }
+    // return a reference to the stored array
     return lineSensorValues;
 }

@@ -40,7 +40,7 @@ void Agent::run()
     else
     {
         // Get the updated sensor values
-        int *lineSensorValues = sensor.getLineReadings();
+        int *lineSensorValues = sensor.getLineSensorReadings();
 
         // Print the sensor values
         Serial.println("Moving Motor. The Sensor Values are:");
@@ -158,6 +158,12 @@ String Agent::policyMotor(int *lineSensorValues)
 
 String policyClaw(int *lineSensorValues)
 {
-    if lineSensorValues
-        [0] == 0 : return "claw"
+    if (lineSensorValues[0] == 0)
+    {
+        return "grab";
+    }
+    else if (lineSensorValues[0] == 1)
+    {
+        return "release";
+    }
 }
