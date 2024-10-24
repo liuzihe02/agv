@@ -7,6 +7,7 @@
 // relevant libraries
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
+#include <Servo.h>
 #include <assert.h>
 
 /**
@@ -32,6 +33,10 @@ class Agent;
 
 // total number of line sensors
 const int NUM_LINE_SENSORS = 5;
+
+// total number of magnetic sensors
+const int NUM_MAGNETIC_SENSORS = 2;
+
 // Pin assignments for sensors
 const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
     8,  // 0: FRONTLEFT
@@ -68,12 +73,17 @@ public:
     Sensor();
     void setup();
 
-    // read and return the line sensor values as an array
-    int *getLineReadings();
+    //  update the values to the line sensor values array, and return a reference to this array
+    int *getLineSensorReadings();
+    // read the magnetic sensor readings and return it, need to store this array
 
 private:
-    // The actual values of line sensors as an array
+    // The actual values of line sensors as an array, this is stored
+    // we must store this as an instance variable
+    // suppose we tried to not store this and have getLineReadings return an array
+    // the pointer cannot find the array as array storage is freed after function executes
     int lineSensorValues[NUM_LINE_SENSORS];
+    int magneticSensorValues[NUM_MAGNETIC_SENSORS];
 };
 
 class Actuator
@@ -83,17 +93,22 @@ public:
     void setup();
 
     // core functions
-    void actClaw(); // state variables as arguments yet to be determined
+    void actClaw(String policy);
     // this wrapper function basically calls the actual actMotor functions to move the thing
     // just directs which one to call
     void actMotor(String policy);
     void stopMotor();
 
 private:
-    // this object controls both left and right motors
+    // this object controls both left and right motors for movement
     Adafruit_MotorShield AFMS;
     Adafruit_DCMotor *leftMotor;
     Adafruit_DCMotor *rightMotor;
+
+    // claw motor object
+    Servo clawServo;
+    // store position for servo
+    int clawPos;
 
     // actMotor will call these functions
 
