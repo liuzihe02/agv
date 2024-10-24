@@ -31,13 +31,14 @@ class Agent;
  */
 
 // total number of line sensors
-const int NUM_LINE_SENSORS = 4;
+const int NUM_LINE_SENSORS = 5;
 // Pin assignments for sensors
 const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
-    8,  // 0: FRONT
+    8,  // 0: FRONTLEFT
     9,  // 1: BACK
     10, // 2: LEFT
-    11  // 3: RIGHT
+    11, // 3: RIGHT
+    12 // 4: FRONTRIGHT
 };
 
 // motor pins
