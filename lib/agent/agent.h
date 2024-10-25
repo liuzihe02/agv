@@ -44,7 +44,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
     10, // 2: LEFT
     11, // 3: RIGHT
     12 // 4: FRONTRIGHT
-};
+}; 
 
 // motor pins
 const int LEFT_MOTOR_PIN = 2;
@@ -131,15 +131,21 @@ private:
     Sensor sensor;
     Actuator actuator;
 
+    // Experimental path to the factory requires 5 junctions.
+    const String path_to_factory[5] = {"Right", "Left", "Left", "Right", "Right"}; 
+
+    int step_counter;
+
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
-    String policyMotor(int *lineSensorValues);
+    String policyMotor(int *lineSensorValues, const String *path);
     // policy for claw
     String policyClaw(int *lineSensorValues);
 
     // these are to handle push button activation
     bool isRunning;
+
     // this will be returned by millis to track when the switch was last activated
     unsigned long lastDebounceTime;
 };

@@ -42,6 +42,7 @@ void Agent::run()
         // Get the updated sensor values
         int *lineSensorValues = sensor.getLineSensorReadings();
 
+
         // Print the sensor values
         Serial.println("Moving Motor. The Sensor Values are:");
         Serial.print("Front: ");
@@ -53,7 +54,7 @@ void Agent::run()
         Serial.print(", Right: ");
         Serial.println(lineSensorValues[3]);
 
-        String motorPolicy = policyMotor(lineSensorValues);
+        String motorPolicy = policyMotor(lineSensorValues, path_to_factory);
         actuator.actMotor(motorPolicy);
     }
 
@@ -84,7 +85,7 @@ void Agent::toggleRunAgent()
     }
 }
 
-String Agent::policyMotor(int *lineSensorValues)
+String Agent::policyMotor(int *lineSensorValues, const String *path)
 {
     int frontLeftLine = lineSensorValues[0];
     int frontRightLine = lineSensorValues[4];
@@ -93,6 +94,7 @@ String Agent::policyMotor(int *lineSensorValues)
     int rightLine = lineSensorValues[3];
 
     // current strategy
+    // Whenever run into a junction, perform the current step in path and increment the program counter to execute the next step at the next
 
     // check if its on a straight line. if it is, keep going front
     // when it meets a T junction, always go right
@@ -101,7 +103,7 @@ String Agent::policyMotor(int *lineSensorValues)
     // when it meets a left turn, turn left
     // when it meets a right turn, go right
 
-    // else: error correction - keep going in a circle right until it magically finds itself on a straight line path
+    // else: error correction - keep going in a straight line until back sensor detects the line again. 
 
     // Assuming 1 means the sensor detects a line, and 0 means it doesn't
 
@@ -123,11 +125,18 @@ String Agent::policyMotor(int *lineSensorValues)
         return "turn_right";
     }
 
-    // -| junction (always go front)
-    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
+    // _| junction (right turn only)
+    if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    {
+        return "turn_right";
+    }
+
+    // |_ junction (left turn only)
+    if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         return "turn_left";
     }
+
 
     // Left turn, regardless of back sensor
     if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
