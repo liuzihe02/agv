@@ -41,6 +41,7 @@ void Agent::run()
     {
         // Get the updated sensor values
         int *lineSensorValues = sensor.getLineSensorReadings();
+        // int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
         // Print the sensor values
         Serial.println("Moving Motor. The Sensor Values are:");
@@ -55,6 +56,9 @@ void Agent::run()
 
         String motorPolicy = policyMotor(lineSensorValues);
         actuator.actMotor(motorPolicy);
+
+        // String clawPolicy = policyClaw(magneticSensorValues);
+        // actuator.actClaw(clawPolicy);
     }
 
     // // Add a delay to make the output readable
