@@ -2,7 +2,7 @@
 
 // IMPLEMENTATION OF ACTUATOR CLASS
 
-// constructor for Actuator with an initialization list
+// constructor for Actuator with an initialization list, call the constructors for associated objects
 Actuator::Actuator() : AFMS(), leftMotor(nullptr), rightMotor(nullptr)
 {
     Serial.println("Actuator instantiated!");
@@ -30,7 +30,7 @@ void Actuator::setup()
             ;
     }
 
-    // set up actuator
+    // set up claw actuator
     clawServo.attach(CLAW_PIN);
     // initialize to zero position
     clawPos = 0;
@@ -67,41 +67,6 @@ void Actuator::actMotor(String policy)
 
 void Actuator::actMotorStep(String policy)
 {
-    // this is the correct version
-    //  if (dir == "forward")
-    //  {
-    //      leftMotor->run(FORWARD);
-    //      leftMotor->setSpeed(200);
-    //      rightMotor->run(FORWARD);
-    //      rightMotor->setSpeed(200);
-    //      return;
-    //  }
-    //  else if (dir == "backward")
-    //  {
-    //      leftMotor->run(BACKWARD);
-    //      leftMotor->setSpeed(200);
-    //      rightMotor->run(BACKWARD);
-    //      rightMotor->setSpeed(200);
-    //      return;
-    //  }
-    //  else if (dir == "left")
-    //  {
-    //      leftMotor->run(BACKWARD);
-    //      leftMotor->setSpeed(150);
-    //      rightMotor->run(FORWARD);
-    //      rightMotor->setSpeed(150);
-    //      return;
-    //  }
-    //  else if (dir == "right")
-    //  {
-    //      leftMotor->run(FORWARD);
-    //      leftMotor->setSpeed(150);
-    //      rightMotor->run(BACKWARD);
-    //      rightMotor->setSpeed(150);
-    //      return;
-    //  }
-
-    // the current version only works with FORWARD and BACKWARDS inverted
     // delay here causes it to turn after it detects the T junctions
     if (policy == "step_forward")
     {

@@ -156,13 +156,14 @@ String Agent::policyMotor(int *lineSensorValues)
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-String policyClaw(int *lineSensorValues)
+String policyClaw(int *magneticSensorValues)
 {
-    if (lineSensorValues[0] == 0)
+    // check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
     {
         return "grab";
     }
-    else if (lineSensorValues[0] == 1)
+    else if (magneticSensorValues[0] == 1)
     {
         return "release";
     }

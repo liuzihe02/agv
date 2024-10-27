@@ -77,7 +77,8 @@ public:
 
     //  update the values to the line sensor values array, and return a reference to this array
     int *getLineSensorReadings();
-    // read the magnetic sensor readings and return it, need to store this array
+    // read the magnetic sensor readings and return it, need to store this array unfortunately
+    int *getMagneticSensorReadings();
 
 private:
     // The actual values of line sensors as an array, this is stored
@@ -114,7 +115,7 @@ private:
 
     // actMotor will call these functions
 
-    // a single step without any delay
+    // a single step without any delay, this is mainly for line following
     void actMotorStep(String policy);
     // try to get it to make a complete turn
     void actMotorTurn(String policy);
@@ -137,8 +138,10 @@ private:
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
     String policyMotor(int *lineSensorValues);
-    // policy for claw
+    // policy for claw, this is a Servo Motor
     String policyClaw(int *lineSensorValues);
+    // policy to decide how LED lights up
+    String policyLED(int *magneticSensorValues);
 
     // these are to handle push button activation
     bool isRunning;
