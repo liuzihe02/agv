@@ -86,7 +86,8 @@ void Agent::toggleRunAgent()
 
 String Agent::policyMotor(int *lineSensorValues)
 {
-    int frontLine = lineSensorValues[0];
+    int frontLeftLine = lineSensorValues[0];
+    int frontRightLine = lineSensorValues[4];
     int backLine = lineSensorValues[1];
     int leftLine = lineSensorValues[2];
     int rightLine = lineSensorValues[3];
@@ -105,45 +106,37 @@ String Agent::policyMotor(int *lineSensorValues)
     // Assuming 1 means the sensor detects a line, and 0 means it doesn't
 
     // Check if it's on a straight line
-    if (frontLine == 1 && backLine == 1 && leftLine == 0 && rightLine == 0)
+    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 1)
     {
         return "step_forward";
     }
 
     // T junction (always go right)
-    if (frontLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
+    if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
         return "turn_right";
     }
 
     // |- junction (always go front)
-    if (frontLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
         return "turn_right";
     }
 
     // -| junction (always go front)
-    if (frontLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
+    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         return "turn_left";
     }
 
     // Left turn, regardless of back sensor
-    if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
-    {
-        return "step_left";
-    }
-    if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
+    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
     {
         return "step_left";
     }
 
     // right turn, regardless of back sensor
-    if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
-    {
-        return "step_right";
-    }
-    if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 0)
+    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
     {
         return "step_right";
     }
@@ -168,3 +161,4 @@ String policyClaw(int *magneticSensorValues)
         return "release";
     }
 }
+  
