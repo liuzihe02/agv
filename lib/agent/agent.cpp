@@ -86,6 +86,10 @@ void Agent::toggleRunAgent()
 
 String Agent::policyMotor(int *lineSensorValues)
 {
+    // the sensors are like
+    //     frontLeft frontRight
+    // left                     right
+    //            back
     int frontLeftLine = lineSensorValues[0];
     int frontRightLine = lineSensorValues[4];
     int backLine = lineSensorValues[1];
@@ -143,6 +147,7 @@ String Agent::policyMotor(int *lineSensorValues)
 
     else if (backLine == 1)
     {
+        // continue doing what it was before
         return "continue";
     }
     // If none of the above conditions are met, implement error correction
@@ -161,4 +166,3 @@ String policyClaw(int *magneticSensorValues)
         return "release";
     }
 }
-  

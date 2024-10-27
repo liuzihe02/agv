@@ -43,7 +43,12 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
     9,  // 1: BACK
     10, // 2: LEFT
     11, // 3: RIGHT
-    12 // 4: FRONTRIGHT
+    12  // 4: FRONTRIGHT
+};
+
+const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
+    6,
+    7,
 };
 
 // motor pins
