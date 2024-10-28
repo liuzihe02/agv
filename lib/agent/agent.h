@@ -140,10 +140,10 @@ private:
     Actuator actuator;
 
     // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
-    String path_to_factory[5] = {"Right", "Left", "Left", "Right", "Right"}; 
+    String pathToFactory[5] = {"Right", "Left", "Left", "Right", "Right"}; 
 
     // Counts up which junction we are on in the path, incremented whenever a junction is detected. 
-    int program_counter;
+    int programCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
