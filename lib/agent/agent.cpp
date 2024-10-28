@@ -18,6 +18,10 @@ void Agent::setup()
     // calls the sensor and actuator setup
     sensor.setup();
     actuator.setup();
+
+    // LED setup
+    pinMode(LED_PIN, OUTPUT);
+
     this->isRunning = false;
     this->lastDebounceTime = 0;
     this->programCounter = 0; // starts program.
@@ -90,6 +94,11 @@ void Agent::toggleRunAgent()
             Serial.println("TOGGLE ACTIVATED");
             // toggle the state of isRunning
             isRunning = !isRunning;
+            if (isRunning == true)
+            {
+                // Resets program
+                programCounter = 0;
+            }
             lastDebounceTime = millis();
         }
     }
@@ -124,60 +133,80 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // Check if it's on a straight line
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 1)
     {
+        digitalWrite(LED_PIN, LOW);
         return "step_forward";
+    }
+
+    // -|- junction (Detects if we're in a square)
+    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 1 && backLine == 1)
+    {
+        // programCounter += 1; // increments counter first when it comes across a junction.
+        // return the policy
+        digitalWrite(LED_PIN, LOW);
+        return "straight_forward";
     }
 
     // T junction
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
         programCounter += 1; // increments counter first when it comes across a junction.
-        // return the policy
+        // return the policy decision
+        digitalWrite(LED_PIN, HIGH);
         return path[programCounter - 1];
     }
 
-    // |- junction (always go front)
+    // |- junction
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
         programCounter += 1;
+        digitalWrite(LED_PIN, HIGH);
         return path[programCounter - 1];
     }
 
-    // -| junction (always go front)
+    // -| junction
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         programCounter += 1;
+        digitalWrite(LED_PIN, HIGH);
         return path[programCounter - 1];
     }
 
     // right corner junction (right turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
+        digitalWrite(LED_PIN, LOW);
         return "turn_right";
     }
 
-    // left corner junction junction (left turn only)
+    // left corner junction (left turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
+        digitalWrite(LED_PIN, LOW);
         return "turn_left";
     }
 
-    // Left turn, regardless of back sensor - this is for line following
-    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
+    // line following - shift left
+    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine==1)
     {
+        digitalWrite(LED_PIN, LOW);
         return "step_left";
     }
 
-    // right turn, regardless of back sensor - this is for line following
-    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
+    // line following - shift right
+    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0 && backLine==1)
     {
+        digitalWrite(LED_PIN, LOW);
         return "step_right";
     }
 
     else if (backLine == 1)
     {
+        digitalWrite(LED_PIN, LOW);
         // continue doing what it was before
         return "continue";
     }
+    
+    digitalWrite(LED_PIN, LOW);
     // If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
 }

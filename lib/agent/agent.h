@@ -58,6 +58,9 @@ const int RIGHT_MOTOR_PIN = 3;
 // claw pin
 const int CLAW_PIN = 13;
 
+// LED pin
+const int LED_PIN = 4; 
+
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
 // delay for the debouncing
