@@ -54,6 +54,11 @@ void Actuator::actMotor(String policy)
         actMotorTurn(policy);
     }
 
+    else if (policy.startsWith("straight"))
+    {
+        actMotorStraight(policy);
+    }
+
     else if (policy == "continue")
     {
         return;
@@ -178,6 +183,29 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->run(FORWARD);
         rightMotor->run(BACKWARD);
         delay(800);
+        return;
+    }
+
+    if (policy == "turn_360")
+    {
+        // turns right 360
+        leftMotor->run(FORWARD);
+        rightMotor->run(BACKWARD);
+        delay(2000);
+        return;
+    }
+}
+
+void Actuator::actMotorStraight(String policy)
+{
+    if (policy == "straight_forward")
+    {
+        // go forward and delay
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(150);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(150);
+        delay(1000);
         return;
     }
 }

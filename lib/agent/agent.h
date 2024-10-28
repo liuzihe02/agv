@@ -116,6 +116,8 @@ private:
     void actMotorStep(String policy);
     // try to get it to make a complete turn
     void actMotorTurn(String policy);
+    // Straight forward or back with delay
+    void actMotorStraight(String policy);
 };
 
 class Agent
@@ -131,15 +133,16 @@ private:
     Sensor sensor;
     Actuator actuator;
 
-    // Experimental path to the factory requires 5 junctions.
-    const String path_to_factory[5] = {"Right", "Left", "Left", "Right", "Right"}; 
+    // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
+    String path_to_factory[5] = {"Right", "Left", "Left", "Right", "Right"}; 
 
-    int step_counter;
+    // Counts up which junction we are on in the path, incremented whenever a junction is detected. 
+    int program_counter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
-    String policyMotor(int *lineSensorValues, const String *path);
+    String policyMotor(int *lineSensorValues, String *path);
     // policy for claw
     String policyClaw(int *lineSensorValues);
 

@@ -20,6 +20,7 @@ void Agent::setup()
     actuator.setup();
     this->isRunning = false;
     this->lastDebounceTime = 0;
+    this->program_counter = 0; // starts program.
     Serial.println("Agent setup complete");
 }
 
@@ -85,7 +86,7 @@ void Agent::toggleRunAgent()
     }
 }
 
-String Agent::policyMotor(int *lineSensorValues, const String *path)
+String Agent::policyMotor(int *lineSensorValues, String *path)
 {
     int frontLeftLine = lineSensorValues[0];
     int frontRightLine = lineSensorValues[4];
@@ -116,13 +117,43 @@ String Agent::policyMotor(int *lineSensorValues, const String *path)
     // T junction (always go right)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        return "turn_right";
+        program_counter+=1; //increments counter when it comes across a junction. 
+        if (path[program_counter-1]=="right") //adjusts for correct index. 
+        {
+            return "turn_right";
+        }
+        if (path[program_counter-1]=="left")
+        {
+            return "turn_left";
+        }
     }
 
     // |- junction (always go front)
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        return "turn_right";
+        program_counter+=1;
+        if (path[program_counter-1]=="front")
+        {
+            return "straight_forward";
+        }
+        if (path[program_counter-1]=="right")
+        {
+            return "turn_right";
+        }
+    }
+
+        // -| junction (always go front)
+    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
+    {
+        program_counter+=1;
+        if (path[program_counter-1]=="front")
+        {
+            return "straight_forward";
+        }
+        if (path[program_counter-1]=="left")
+        {
+            return "turn_left";
+        }
     }
 
     // _| junction (right turn only)
