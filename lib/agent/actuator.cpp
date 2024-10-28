@@ -92,21 +92,21 @@ void Actuator::actMotorStep(String policy)
     else if (policy == "step_left")
     {
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(70);
         // leftMotor->run(RELEASE);
         // leftMotor->setSpeed(0);
 
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(70);
         return;
     }
     else if (policy == "step_right")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(70);
 
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(70);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
         return;
@@ -126,12 +126,12 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(150);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(150);
-        delay(1200);
+        delay(800);
 
         // turn left and delay, same speed
         leftMotor->run(BACKWARD);
         rightMotor->run(FORWARD);
-        delay(800);
+        delay(1200);
         return;
     }
 
@@ -142,12 +142,12 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(150);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(150);
-        delay(1200);
+        delay(800);
 
         // turn right and delay, same speed
         leftMotor->run(FORWARD);
         rightMotor->run(BACKWARD);
-        delay(800);
+        delay(1200);
         return;
     }
 
@@ -207,4 +207,3 @@ void Actuator::actLED(String policy)
 {
     // not implemented yet
 }
-

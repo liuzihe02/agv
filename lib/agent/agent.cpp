@@ -20,7 +20,7 @@ void Agent::setup()
     actuator.setup();
     this->isRunning = false;
     this->lastDebounceTime = 0;
-    this->programCounter= 0; // starts program.
+    this->programCounter = 0; // starts program.
     Serial.println("Agent setup complete");
 }
 
@@ -43,7 +43,6 @@ void Agent::run()
         // Get the updated sensor values
         int *lineSensorValues = sensor.getLineSensorReadings();
         // int *magneticSensorValues = sensor.getMagneticSensorReadings();
-
 
         // Print the sensor values
         Serial.println("Moving Motor. The Line Sensor Values are:");
@@ -118,7 +117,7 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // when it meets a left turn, turn left
     // when it meets a right turn, go right
 
-    // else: error correction - keep going in a straight line until back sensor detects the line again. 
+    // else: error correction - keep going in a straight line until back sensor detects the line again.
 
     // Assuming 1 means the sensor detects a line, and 0 means it doesn't
 
@@ -131,23 +130,23 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // T junction
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        programCounter+=1; //increments counter first when it comes across a junction. 
-        //return the policy
-        return path[programCounter-1];
+        programCounter += 1; // increments counter first when it comes across a junction.
+        // return the policy
+        return path[programCounter - 1];
     }
 
     // |- junction (always go front)
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        programCounter+=1;
-        return path[programCounter-1];
+        programCounter += 1;
+        return path[programCounter - 1];
     }
 
-        // -| junction (always go front)
+    // -| junction (always go front)
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        programCounter+=1;
-        return path[programCounter-1];
+        programCounter += 1;
+        return path[programCounter - 1];
     }
 
     // right corner junction (right turn only)
@@ -161,7 +160,6 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     {
         return "turn_left";
     }
-
 
     // Left turn, regardless of back sensor - this is for line following
     if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
