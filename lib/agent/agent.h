@@ -140,7 +140,7 @@ private:
     Actuator actuator;
 
     // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
-    String pathToFactory[5] = {"Right", "Left", "Left", "Right", "Right"}; 
+    String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_right"}; 
 
     // Counts up which junction we are on in the path, incremented whenever a junction is detected. 
     int programCounter;
@@ -148,6 +148,7 @@ private:
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
+    // also takes in a specific path to follow
     String policyMotor(int *lineSensorValues, String *path);
     // policy for claw
     String policyClaw(int *lineSensorValues);

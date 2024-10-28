@@ -122,68 +122,48 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
         return "step_forward";
     }
 
-    // T junction (always go right)
+    // T junction
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        programCounter+=1; //increments counter when it comes across a junction. 
-        if (path[programCounter-1]=="right") //adjusts for correct index. 
-        {
-            return "turn_right";
-        }
-        if (path[programCounter-1]=="left")
-        {
-            return "turn_left";
-        }
+        programCounter+=1; //increments counter first when it comes across a junction. 
+        //return the policy
+        return path[programCounter-1];
     }
 
     // |- junction (always go front)
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
         programCounter+=1;
-        if (path[programCounter-1]=="front")
-        {
-            return "straight_forward";
-        }
-        if (path[programCounter-1]=="right")
-        {
-            return "turn_right";
-        }
+        return path[programCounter-1];
     }
 
         // -| junction (always go front)
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         programCounter+=1;
-        if (path[programCounter-1]=="front")
-        {
-            return "straight_forward";
-        }
-        if (path[programCounter-1]=="left")
-        {
-            return "turn_left";
-        }
+        return path[programCounter-1];
     }
 
-    // _| junction (right turn only)
+    // right corner junction (right turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
         return "turn_right";
     }
 
-    // |_ junction (left turn only)
+    // left corner junction junction (left turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         return "turn_left";
     }
 
 
-    // Left turn, regardless of back sensor
+    // Left turn, regardless of back sensor - this is for line following
     if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
     {
         return "step_left";
     }
 
-    // right turn, regardless of back sensor
+    // right turn, regardless of back sensor - this is for line following
     if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
     {
         return "step_right";
