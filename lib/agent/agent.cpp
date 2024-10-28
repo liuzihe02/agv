@@ -46,7 +46,7 @@ void Agent::run()
 
 
         // Print the sensor values
-        Serial.println("Moving Motor. The Sensor Values are:");
+        Serial.println("Moving Motor. The Line Sensor Values are:");
         Serial.print("Front: ");
         Serial.print(lineSensorValues[0]);
         Serial.print(", Back: ");
@@ -55,6 +55,12 @@ void Agent::run()
         Serial.print(lineSensorValues[2]);
         Serial.print(", Right: ");
         Serial.println(lineSensorValues[3]);
+
+        // Serial.println("The Magnetic Values are:");
+        // Serial.print("First: ");
+        // Serial.print(magneticSensorValues[0]);
+        // Serial.print(", Second: ");
+        // Serial.print(magneticSensorValues[1]);
 
         String motorPolicy = policyMotor(lineSensorValues, pathToFactory);
         actuator.actMotor(motorPolicy);
@@ -97,10 +103,10 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // left                     right
     //            back
     int frontLeftLine = lineSensorValues[0];
-    int frontRightLine = lineSensorValues[4];
     int backLine = lineSensorValues[1];
     int leftLine = lineSensorValues[2];
     int rightLine = lineSensorValues[3];
+    int frontRightLine = lineSensorValues[4];
 
     // current strategy
     // Whenever run into a junction, perform the current step in path and increment the program counter to execute the next step at the next
