@@ -105,6 +105,9 @@ public:
     void actMotor(String policy);
     void stopMotor();
 
+    // toggles the LED
+    void actLED(String policy);
+
 private:
     // this object controls both left and right motors for movement
     Adafruit_MotorShield AFMS;

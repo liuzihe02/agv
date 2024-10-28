@@ -183,7 +183,7 @@ void Actuator::stopMotor()
 
 void Actuator::actClaw(String policy)
 {
-    if (policy == "grab")
+    if (policy == "claw_grab")
     {
         for (clawPos = 0; clawPos <= 180; clawPos += 1)
         { // goes from 0 degrees to 180 degrees
@@ -192,7 +192,7 @@ void Actuator::actClaw(String policy)
             delay(15);                // waits 15 ms for the servo to reach the position
         }
     }
-    else if (policy == "release")
+    else if (policy == "claw_release")
     {
         for (clawPos = 180; clawPos <= 0; clawPos -= 1)
         { // goes from 180 to 0
@@ -202,3 +202,9 @@ void Actuator::actClaw(String policy)
         }
     }
 }
+
+void Actuator::actLED(String policy)
+{
+    // not implemented yet
+}
+

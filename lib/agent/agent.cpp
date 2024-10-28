@@ -183,10 +183,23 @@ String policyClaw(int *magneticSensorValues)
     // check for the FIRST magnetic sensor values only
     if (magneticSensorValues[0] == 0)
     {
-        return "grab";
+        return "claw_grab";
     }
     else if (magneticSensorValues[0] == 1)
     {
-        return "release";
+        return "claw_release";
+    }
+}
+
+String policyLED(int *magneticSensorValues)
+{
+    // check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
+    {
+        return "LED_off";
+    }
+    else if (magneticSensorValues[0] == 1)
+    {
+        return "LED_on";
     }
 }
