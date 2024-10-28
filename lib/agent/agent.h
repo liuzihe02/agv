@@ -43,8 +43,13 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
     9,  // 1: BACK
     10, // 2: LEFT
     11, // 3: RIGHT
-    12 // 4: FRONTRIGHT
-}; 
+    12  // 4: FRONTRIGHT
+};
+
+const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
+    6,
+    7,
+};
 
 // motor pins
 const int LEFT_MOTOR_PIN = 2;
@@ -75,7 +80,8 @@ public:
 
     //  update the values to the line sensor values array, and return a reference to this array
     int *getLineSensorReadings();
-    // read the magnetic sensor readings and return it, need to store this array
+    // read the magnetic sensor readings and return it, need to store this array unfortunately
+    int *getMagneticSensorReadings();
 
 private:
     // The actual values of line sensors as an array, this is stored
@@ -112,7 +118,7 @@ private:
 
     // actMotor will call these functions
 
-    // a single step without any delay
+    // a single step without any delay, this is mainly for line following
     void actMotorStep(String policy);
     // try to get it to make a complete turn
     void actMotorTurn(String policy);
@@ -145,6 +151,8 @@ private:
     String policyMotor(int *lineSensorValues, String *path);
     // policy for claw
     String policyClaw(int *lineSensorValues);
+    // policy to decide how LED lights up
+    String policyLED(int *magneticSensorValues);
 
     // these are to handle push button activation
     bool isRunning;

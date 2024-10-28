@@ -42,6 +42,7 @@ void Agent::run()
     {
         // Get the updated sensor values
         int *lineSensorValues = sensor.getLineSensorReadings();
+        // int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
 
         // Print the sensor values
@@ -57,6 +58,9 @@ void Agent::run()
 
         String motorPolicy = policyMotor(lineSensorValues, path_to_factory);
         actuator.actMotor(motorPolicy);
+
+        // String clawPolicy = policyClaw(magneticSensorValues);
+        // actuator.actClaw(clawPolicy);
     }
 
     // // Add a delay to make the output readable
@@ -88,6 +92,10 @@ void Agent::toggleRunAgent()
 
 String Agent::policyMotor(int *lineSensorValues, String *path)
 {
+    // the sensors are like
+    //     frontLeft frontRight
+    // left                     right
+    //            back
     int frontLeftLine = lineSensorValues[0];
     int frontRightLine = lineSensorValues[4];
     int backLine = lineSensorValues[1];
@@ -183,21 +191,22 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
 
     else if (backLine == 1)
     {
+        // continue doing what it was before
         return "continue";
     }
     // If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-String policyClaw(int *lineSensorValues)
+String policyClaw(int *magneticSensorValues)
 {
-    if (lineSensorValues[0] == 0)
+    // check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
     {
         return "grab";
     }
-    else if (lineSensorValues[0] == 1)
+    else if (magneticSensorValues[0] == 1)
     {
         return "release";
     }
 }
-  
