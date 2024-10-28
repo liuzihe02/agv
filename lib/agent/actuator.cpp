@@ -121,44 +121,58 @@ void Actuator::actMotorTurn(String policy)
 {
     if (policy == "turn_left")
     {
-        // go forward and delay
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
-        delay(800);
+        // // go forward and delay
+        // leftMotor->run(FORWARD);
+        // leftMotor->setSpeed(115);
+        // rightMotor->run(FORWARD);
+        // rightMotor->setSpeed(115);
+        // delay(600);
 
-        // turn left and delay, same speed
-        leftMotor->run(BACKWARD);
+        // // turn left and delay, same speed
+        // leftMotor->run(BACKWARD);
+        // rightMotor->run(FORWARD);
+        // delay(2800);
+
+        //keep left stationary and turn right only
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
-        delay(3000);
+        rightMotor->setSpeed(250);
+        delay(2000);
         return;
     }
 
     if (policy == "turn_right")
     {
-        // go forward and delay
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
-        delay(800);
+        // // go forward and delay
+        // leftMotor->run(FORWARD);
+        // leftMotor->setSpeed(115);
+        // rightMotor->run(FORWARD);
+        // rightMotor->setSpeed(115);
+        // delay(600);
 
-        // turn right and delay, same speed
-        leftMotor->run(FORWARD);
-        rightMotor->run(BACKWARD);
-        delay(3000);
-        return;
-    }
+        // // turn right and delay, same speed
+        // leftMotor->run(FORWARD);
+        // rightMotor->run(BACKWARD);
+        // delay(2800);
 
-    if (policy == "turn_360")
-    {
-        // turns right 360
+        //keep right stationary and turn left only
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
         leftMotor->run(FORWARD);
-        rightMotor->run(BACKWARD);
+        leftMotor->setSpeed(250);
         delay(2000);
         return;
     }
+
+    // if (policy == "turn_360")
+    // {
+    //     // turns right 360
+    //     leftMotor->run(FORWARD);
+    //     rightMotor->run(BACKWARD);
+    //     delay(3000);
+    //     return;
+    // }
 }
 
 void Actuator::actMotorStraight(String policy)

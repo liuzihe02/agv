@@ -24,7 +24,7 @@ void Agent::setup()
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
-    this->programCounter = 0; // starts program.
+    this->pathCounter = 0; // starts program.
     Serial.println("Agent setup complete");
 }
 
@@ -96,8 +96,8 @@ void Agent::toggleRunAgent()
             isRunning = !isRunning;
             if (isRunning == true)
             {
-                // Resets program
-                programCounter = 0;
+                // Resets program path
+                pathCounter = 0;
             }
             lastDebounceTime = millis();
         }
@@ -140,35 +140,34 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // -|- junction (Detects if we're in a square)
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        // programCounter += 1; // increments counter first when it comes across a junction.
         // return the policy
         digitalWrite(LED_PIN, LOW);
-        return "straight_forward";
+        return "step_forward";
     }
 
     // T junction
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        programCounter += 1; // increments counter first when it comes across a junction.
+        pathCounter += 1; // increments counter first when it comes across a junction.
         // return the policy decision
         digitalWrite(LED_PIN, HIGH);
-        return path[programCounter - 1];
+        return path[pathCounter - 1];
     }
 
     // |- junction
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        programCounter += 1;
+        pathCounter += 1;
         digitalWrite(LED_PIN, HIGH);
-        return path[programCounter - 1];
+        return path[pathCounter - 1];
     }
 
     // -| junction
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        programCounter += 1;
+        pathCounter += 1;
         digitalWrite(LED_PIN, HIGH);
-        return path[programCounter - 1];
+        return path[pathCounter - 1];
     }
 
     // right corner junction (right turn only)

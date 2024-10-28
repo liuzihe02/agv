@@ -149,7 +149,7 @@ private:
     String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_right"}; 
 
     // Counts up which junction we are on in the path, incremented whenever a junction is detected. 
-    int programCounter;
+    int pathCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
