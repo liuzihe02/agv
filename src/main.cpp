@@ -38,12 +38,14 @@ void loop()
 // {
 //   myservo.attach(13); // attaches the servo on pin 13 to the servo object
 // }
-// void loop(){
-//  val = digitalRead(inputPin); // read input value
-//  if (val == HIGH) { // check if the input is HIGH
-//  Serial.println("High");
-//  } else {
-//   Serial.println("Low");
+// void loop() {
+//  for (pos = 0; pos <= 50; pos += 1) { // goes from 0 degrees to 180 degrees
+//  // in steps of 1 degree
+//  myservo.write(pos); // tell servo to go to position in variable 'pos'
+//  delay(50); // waits 15 ms for the servo to reach the position
 //  }
-//  Serial.print(val);
+//  for (pos = 50; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+//  myservo.write(pos); // tell servo to go to position in variable 'pos'
+//  delay(50); // waits 15 ms for the servo to reach the position
+//  }
 // }

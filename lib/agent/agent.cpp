@@ -155,7 +155,7 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     }
 
     // |- junction
-    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
         pathCounter += 1;
         digitalWrite(LED_PIN, HIGH);
@@ -163,7 +163,7 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     }
 
     // -| junction
-    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
+    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
         pathCounter += 1;
         digitalWrite(LED_PIN, HIGH);
@@ -185,14 +185,14 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     }
 
     // line following - shift left
-    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine==1)
+    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
     {
         digitalWrite(LED_PIN, LOW);
         return "step_left";
     }
 
     // line following - shift right
-    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0 && backLine==1)
+    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
     {
         digitalWrite(LED_PIN, LOW);
         return "step_right";
