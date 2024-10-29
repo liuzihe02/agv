@@ -46,6 +46,10 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
     12  // 4: FRONTRIGHT
 };
 
+// How many time steps to store previous line sensor values
+const int LINE_SENSOR_BUFFER_SIZE = 5;
+
+// placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
     6,
     7,
@@ -81,17 +85,25 @@ public:
     Sensor();
     void setup();
 
-    //  update the values to the line sensor values array, and return a reference to this array
-    int *getLineSensorReadings();
-    // read the magnetic sensor readings and return it, need to store this array unfortunately
-    int *getMagneticSensorReadings();
+    //  we keep a history of the past few
+    int (*updateLineSensorBuffer())[NUM_LINE_SENSORS];
+    // update the magnetic sensor readings and return the array, need to store this array unfortunately
+    int *updateMagneticSensorReadings();
 
 private:
-    // The actual values of line sensors as an array, this is stored
+    // The buffer of all line sensors values as a 2D MATRIX
+    // 2D array to store history: [LINE_SENSOR_BUFFER_SIZE rows][NUM_LINE_SENSORS columns]
+    // whenever we make a decision, we need to check if the latest reading is the same as all the older readings in the buffer
+    // sometimes, a reading is only temporarily when it first encounters a line
+
     // we must store this as an instance variable
     // suppose we tried to not store this and have getLineReadings return an array
     // the pointer cannot find the array as array storage is freed after function executes
-    int lineSensorValues[NUM_LINE_SENSORS];
+
+    // we need a buffer because usually whenb we make decisions, we need to refer to the last x number of values to double check
+    int lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE][NUM_LINE_SENSORS];
+
+    // a 1D ARRAY of magnetic sensor values
     int magneticSensorValues[NUM_MAGNETIC_SENSORS];
 };
 
@@ -154,10 +166,11 @@ private:
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
+    // this information is currently a 2D matrix of the previous x number of line sensor values
     // also takes in a specific path to follow
-    String policyMotor(int *lineSensorValues, String *path);
+    String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    String policyClaw(int *lineSensorValues);
+    // String policyClaw(int *lineSensorValues);
     // policy to decide how LED lights up
     String policyLED(int *magneticSensorValues);
 
