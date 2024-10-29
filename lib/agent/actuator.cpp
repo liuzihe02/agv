@@ -76,37 +76,37 @@ void Actuator::actMotorStep(String policy)
     if (policy == "step_forward")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(200);
+        leftMotor->setSpeed(100);
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(100);
         return;
     }
     else if (policy == "step_backward")
     {
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(200);
+        leftMotor->setSpeed(100);
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(100);
         return;
     }
     else if (policy == "step_left")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(50);
         // leftMotor->run(RELEASE);
         // leftMotor->setSpeed(0);
 
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(100);
         return;
     }
     else if (policy == "step_right")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(200);
+        leftMotor->setSpeed(100);
 
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(50);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
         return;
@@ -121,23 +121,23 @@ void Actuator::actMotorTurn(String policy)
 {
     if (policy == "turn_left")
     {
-        // // go forward and delay
+        // just delay to see lag
         leftMotor->run(RELEASE);
         leftMotor->setSpeed(0);
         rightMotor->run(RELEASE);
         rightMotor->setSpeed(0);
-        delay(200);
+        delay(1850);
 
-        // // turn left and delay, same speed
-        leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(100);
-        rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(100);
-        delay(1000);
+        // // // turn left and delay, same speed
+        // leftMotor->run(BACKWARD);
+        // leftMotor->setSpeed(100);
+        // rightMotor->run(BACKWARD);
+        // rightMotor->setSpeed(100);
+        // delay(1000);
 
-        //keep left stationary and turn right only
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
+        // keep left stationary and turn right only
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
         delay(1850);
@@ -146,23 +146,16 @@ void Actuator::actMotorTurn(String policy)
 
     if (policy == "turn_right")
     {
-        // // go forward and delay
+        // just delay to see lag
         leftMotor->run(RELEASE);
         leftMotor->setSpeed(0);
         rightMotor->run(RELEASE);
         rightMotor->setSpeed(0);
-        delay(200);
+        delay(1850);
 
-        // // turn right and delay, same speed
-        leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(200);
-        rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(200);
-        delay(1000);
-
-        //keep right stationary and turn left only
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
+        // keep right stationary and turn left only
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
         delay(1850);

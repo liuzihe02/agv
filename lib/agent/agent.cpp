@@ -137,8 +137,8 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
         return "step_forward";
     }
 
-    // -|- junction (Detects if we're in a square)
-    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 1 && rightLine == 1 && backLine == 1)
+    // -|- junction (Detects if we're in a square) - only one of middle 2 needs to be one
+    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
         // return the policy
         digitalWrite(LED_PIN, LOW);
@@ -201,12 +201,12 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     else if (backLine == 1)
     {
         digitalWrite(LED_PIN, LOW);
-        // continue doing what it was before
+        //  continue doing what it was before
         return "continue";
     }
-    
+
     digitalWrite(LED_PIN, LOW);
-    // If none of the above conditions are met, implement error correction
+    //  If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
 }
 

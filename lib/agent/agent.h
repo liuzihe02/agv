@@ -59,7 +59,7 @@ const int RIGHT_MOTOR_PIN = 3;
 const int CLAW_PIN = 13;
 
 // LED pin
-const int LED_PIN = 4; 
+const int LED_PIN = 4;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
@@ -146,9 +146,9 @@ private:
     Actuator actuator;
 
     // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
-    String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left"}; 
+    String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left"};
 
-    // Counts up which junction we are on in the path, incremented whenever a junction is detected. 
+    // Counts up which junction we are on in the path, incremented whenever a junction is detected.
     int pathCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state
