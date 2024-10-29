@@ -20,9 +20,9 @@ void setup()
 
 void loop()
 {
-  Serial.println("===Beginning Loop===");
+  // Serial.println("===Beginning Loop===");
   agent->run();
-  Serial.println("===End Loop===");
+  // Serial.println("===End Loop===");
 }
 
 // Servo myservo; // create servo object to control a servo

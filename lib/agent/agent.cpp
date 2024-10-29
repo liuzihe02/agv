@@ -48,22 +48,16 @@ void Agent::run()
         int *lineSensorValues = sensor.getLineSensorReadings();
         // int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
-        // Print the sensor values
-        Serial.println("Moving Motor. The Line Sensor Values are:");
-        Serial.print("Front: ");
-        Serial.print(lineSensorValues[0]);
-        Serial.print(", Back: ");
-        Serial.print(lineSensorValues[1]);
-        Serial.print(", Left: ");
-        Serial.print(lineSensorValues[2]);
-        Serial.print(", Right: ");
-        Serial.println(lineSensorValues[3]);
-
-        // Serial.println("The Magnetic Values are:");
-        // Serial.print("First: ");
-        // Serial.print(magneticSensorValues[0]);
-        // Serial.print(", Second: ");
-        // Serial.print(magneticSensorValues[1]);
+        // // Print the sensor values
+        // Serial.println("Moving Motor. The Line Sensor Values are:");
+        // Serial.print("Front: ");
+        // Serial.print(lineSensorValues[0]);
+        // Serial.print(", Back: ");
+        // Serial.print(lineSensorValues[1]);
+        // Serial.print(", Left: ");
+        // Serial.print(lineSensorValues[2]);
+        // Serial.print(", Right: ");
+        // Serial.println(lineSensorValues[3]);
 
         String motorPolicy = policyMotor(lineSensorValues, pathToFactory);
         actuator.actMotor(motorPolicy);
@@ -137,10 +131,11 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
         return "step_forward";
     }
 
-    // -|- junction (Detects if we're in a square) - only one of middle 2 needs to be one
+    // -|- cross (Detects if we're in a blue square)
+    // note only one of middle 2 needs to be one
+    // this is causing a TON of problems, thinking the blue square is a real junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        // return the policy
         digitalWrite(LED_PIN, LOW);
         return "step_forward";
     }
@@ -157,17 +152,55 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // |- junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        pathCounter += 1;
-        digitalWrite(LED_PIN, HIGH);
-        return path[pathCounter - 1];
+        // double check by doing the sensor reading again; not the best practice but still
+        delay(100);
+        int *lineSensorValues = sensor.getLineSensorReadings();
+        int frontLeftLine = lineSensorValues[0];
+        int backLine = lineSensorValues[1];
+        int leftLine = lineSensorValues[2];
+        int rightLine = lineSensorValues[3];
+        int frontRightLine = lineSensorValues[4];
+        // fake, actually a blue cross
+        // if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
+        if (leftLine == 1)
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "straight_forward";
+        }
+        // real |- junction
+        else
+        {
+            pathCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[pathCounter - 1];
+        }
     }
 
     // -| junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        pathCounter += 1;
-        digitalWrite(LED_PIN, HIGH);
-        return path[pathCounter - 1];
+        // double check by doing the sensor reading again; not the best practice but still
+        delay(100);
+        int *lineSensorValues = sensor.getLineSensorReadings();
+        int frontLeftLine = lineSensorValues[0];
+        int backLine = lineSensorValues[1];
+        int leftLine = lineSensorValues[2];
+        int rightLine = lineSensorValues[3];
+        int frontRightLine = lineSensorValues[4];
+        // fake, actually a cross
+        // if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
+        if (rightLine == 1)
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "straight_forward";
+        }
+        // real |- junction
+        else
+        {
+            pathCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[pathCounter - 1];
+        }
     }
 
     // right corner junction (right turn only)

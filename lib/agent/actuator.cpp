@@ -41,8 +41,8 @@ void Actuator::setup()
 
 void Actuator::actMotor(String policy)
 {
-    Serial.println("Policy is currently ");
-    Serial.println(policy);
+    // Serial.println("Policy is currently ");
+    // Serial.println(policy);
 
     if (policy.startsWith("step"))
     {
@@ -76,37 +76,37 @@ void Actuator::actMotorStep(String policy)
     if (policy == "step_forward")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(200);
         return;
     }
     else if (policy == "step_backward")
     {
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(200);
         return;
     }
     else if (policy == "step_left")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(50);
+        leftMotor->setSpeed(100);
         // leftMotor->run(RELEASE);
         // leftMotor->setSpeed(0);
 
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(200);
         return;
     }
     else if (policy == "step_right")
     {
         leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(200);
 
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(50);
+        rightMotor->setSpeed(100);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
         return;
@@ -128,19 +128,12 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(0);
         delay(1850);
 
-        // // // turn left and delay, same speed
-        // leftMotor->run(BACKWARD);
-        // leftMotor->setSpeed(100);
-        // rightMotor->run(BACKWARD);
-        // rightMotor->setSpeed(100);
-        // delay(1000);
-
         // keep left stationary and turn right only
         leftMotor->run(RELEASE);
         leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1850);
+        delay(1800);
         return;
     }
 
@@ -158,18 +151,9 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(0);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1850);
+        delay(1800);
         return;
     }
-
-    // if (policy == "turn_360")
-    // {
-    //     // turns right 360
-    //     leftMotor->run(FORWARD);
-    //     rightMotor->run(BACKWARD);
-    //     delay(3000);
-    //     return;
-    // }
 }
 
 void Actuator::actMotorStraight(String policy)

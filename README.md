@@ -31,3 +31,11 @@ Compared to a project without `platformio`, the main difference is the `platform
 #### Importing core libraries
 
 Since we're not using the Arduino IDE, we'll have to import libraries ourselves using `#include` in the `main` file.
+
+#### Notes
+
+- Different motor have different speeds
+- Thinking blue crosses are junctions
+- `Serial.Print` causes major lags, remove these in the loops
+  - After line sensing, delayed action to motors
+- Added a double check whenever we encounter `|-` or `-|` junctions, make sure its not a cross
