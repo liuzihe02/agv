@@ -156,6 +156,30 @@ public:
 private:
     Sensor sensor;
     Actuator actuator;
+    
+    static const int NUM_OF_PATHS = 11;
+    static const int MAX_NUM_JUNCTIONS = 20;
+
+    // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
+    String paths[NUM_OF_PATHS][MAX_NUM_JUNCTIONS] = 
+    {  
+        {"start_forward","turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
+
+        {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
+        {"start_backward", "turn_180_clockwise", "straight_forward", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // Disposal back to factory
+
+        {"start_backward", "turn_right", "turn_right", "straight_forward","turn_right", "place_box"}, //Factory to B1
+        {"start_backward", "turn_right", "straight_forward", "turn_left", "end_f_turn_right"}, //B1 to Factory
+
+        {"start_backward", "turn_right", "turn_left", "turn_left", "place_box"}, // Factory to B2;
+        {"start_backward", "turn_left", "turn_right", "end_f_turn_right"}, // B2 to factory
+
+        {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward","turn_right", "place_box"}, // Factory to B3
+        {"start_backward", "turn_right", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // B3 to Factory
+
+        {"start_backward", "turn_right", "turn_left", "straight_forward", "turn_left", "place_box"}, // Factory to B4
+        {"start_backward", "turn_left", "straight_forward", "turn_right", "end_f_turn_right"}, // B4 to Factory
+    };
 
     // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
     String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left&park"};
