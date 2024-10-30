@@ -38,4 +38,5 @@ Since we're not using the Arduino IDE, we'll have to import libraries ourselves 
 - Thinking blue crosses are junctions
 - `Serial.Print` causes major lags, remove these in the loops
   - After line sensing, delayed action to motors
+  - Use a buffer to make readings consistent before making a decision
 - Added a double check whenever we encounter `|-` or `-|` junctions, make sure its not a cross

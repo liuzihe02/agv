@@ -24,7 +24,10 @@ void Agent::setup()
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
-    this->pathCounter = 0; // starts program.
+    // starts at the first junction
+    this->junctionCounter = 0;
+    // start the whole program/first path
+    this->pathCounter = 0;
     Serial.println("Agent setup complete");
 }
 
@@ -44,30 +47,42 @@ void Agent::run()
     // continue running
     else
     {
-        // Get the updated sensor values as a history/buffer
-        int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
-        // int *magneticSensorValues = sensor.getMagneticSensorReadings();
+        // declare the policy first
+        String motorPolicy;
 
-        // // Print the sensor values
-        // Serial.println("Moving Motor. The Line Sensor Values are:");
-        // Serial.print("Front: ");
-        // Serial.print(lineSensorValues[0]);
-        // Serial.print(", Back: ");
-        // Serial.print(lineSensorValues[1]);
-        // Serial.print(", Left: ");
-        // Serial.print(lineSensorValues[2]);
-        // Serial.print(", Right: ");
-        // Serial.println(lineSensorValues[3]);
+        // check if we are at the start of the loop, read from the junction counter directly
+        if (allPaths[pathCounter][junctionCounter].startsWith("start"))
+        {
+            // send this straight to the actuator
+            // no need to think about whats the relevant policy
+            motorPolicy = "step_backward";
+        }
 
-        String motorPolicy = policyMotor(lineSensorBuffer, pathToFactory);
+        // we know we are not at the start
+        else
+        {
+            // Get the updated sensor values as a history/buffer
+            int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
+            // int *magneticSensorValues = sensor.getMagneticSensorReadings();
+
+            // get the policy using the current path
+            motorPolicy = policyMotor(lineSensorBuffer, allPaths[pathCounter]);
+        };
+
+        // send the relevant policy to the actuator
         actuator.actMotor(motorPolicy);
 
         // String clawPolicy = policyClaw(magneticSensorValues);
         // actuator.actClaw(clawPolicy);
-    }
 
-    // // Add a delay to make the output readable
-    // delay(2000);
+        // check if current path has ended; reset the junctionCounter and increment the pathCounter
+        if (motorPolicy.startsWith("end"))
+        {
+            // move to the next path
+            junctionCounter = 0;
+            pathCounter += 1;
+        }
+    }
 }
 
 /**
@@ -90,7 +105,7 @@ void Agent::toggleRunAgent()
             if (isRunning == true)
             {
                 // Resets program path
-                pathCounter = 0;
+                junctionCounter = 0;
             }
             lastDebounceTime = millis();
         }
@@ -170,9 +185,9 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            pathCounter += 1;
+            junctionCounter += 1;
             digitalWrite(LED_PIN, HIGH);
-            return path[pathCounter - 1];
+            return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
         else
@@ -188,9 +203,9 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            pathCounter += 1;
+            junctionCounter += 1;
             digitalWrite(LED_PIN, HIGH);
-            return path[pathCounter - 1];
+            return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
         else
@@ -206,9 +221,9 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            pathCounter += 1;
+            junctionCounter += 1;
             digitalWrite(LED_PIN, HIGH);
-            return path[pathCounter - 1];
+            return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
         else

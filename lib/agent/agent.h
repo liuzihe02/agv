@@ -118,6 +118,9 @@ public:
     // this wrapper function basically calls the actual actMotor functions to move the thing
     // just directs which one to call
     void actMotor(String policy);
+
+    // stops the Motor indefinitely
+    // this is not an action, we call this using toggle!
     void stopMotor();
 
     // toggles the LED
@@ -140,8 +143,13 @@ private:
     void actMotorStep(String policy);
     // try to get it to make a complete turn
     void actMotorTurn(String policy);
-    // Straight forward or back with delay
+    // Straight  decision - forward or back with a timed delay
     void actMotorStraight(String policy);
+
+    // hard coded starting conditions for a single path
+    void actMotorStart(String policy);
+    // hard coded ending conditions for a single path
+    void actMotorEnd(String policy);
 };
 
 class Agent
@@ -157,10 +165,23 @@ private:
     Sensor sensor;
     Actuator actuator;
 
-    // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
-    String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left"};
+    // these are class variables
 
-    // Counts up which junction we are on in the path, incremented whenever a junction is detected.
+    // these are stuff related to the overall coordination of paths
+    static const int NUM_ROWS = 2;  // Number of paths
+    static const int NUM_COLS = 20; // Max number of junctions per path
+    // all the paths stored as a 2D matrix
+    String allPaths[NUM_ROWS][NUM_COLS] = {
+        // path from start to the factory, we call this 0
+        {"turn_right", "turn_left", "turn_left", "turn_right", "end_0"},
+        // path from the factory to the contamination area
+        {"exit", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to Disposal area
+    };
+
+    // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
+    int junctionCounter;
+
+    // selects which path out of 10 we are on
     int pathCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state

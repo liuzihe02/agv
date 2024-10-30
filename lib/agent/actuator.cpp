@@ -54,10 +54,15 @@ void Actuator::actMotor(String policy)
         actMotorTurn(policy);
     }
 
-    // else if (policy.startsWith("straight"))
-    // {
-    //     actMotorStraight(policy);
-    // }
+    else if (policy.startsWith("straight"))
+    {
+        actMotorStraight(policy);
+    }
+
+    else if (policy.startsWith("end"))
+    {
+        actMotorEnd(policy);
+    }
 
     else if (policy == "continue")
     {
@@ -156,24 +161,88 @@ void Actuator::actMotorTurn(String policy)
     }
 }
 
-// void Actuator::actMotorStraight(String policy)
+void Actuator::actMotorStraight(String policy)
+{
+    if (policy == "straight_forward")
+    {
+        // go forward and delay
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(100);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(100);
+        delay(1000);
+        return;
+    }
+}
+
+void Actuator::actMotorEnd(String policy)
+{
+    if (policy == "end_f_turn_left")
+    {
+        // just delay to see lag
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1850);
+
+        // keep left stationary and turn right only
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(250);
+        delay(2100);
+
+        // go forward for abit
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(250);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(250);
+        delay(2100);
+
+        return;
+    }
+
+    if (policy == "end_c")
+    {
+        // go forward for abit
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(250);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(250);
+        delay(2100);
+    }
+}
+
+// void Actuator::actMotorStart(String policy)
 // {
-//     if (policy == "straight_forward")
+//     if (policy == "start_backward")
 //     {
-//         // go forward and delay
-//         leftMotor->run(FORWARD);
-//         leftMotor->setSpeed(100);
-//         rightMotor->run(FORWARD);
-//         rightMotor->setSpeed(100);
-//         delay(1000);
+//         // basically just step backwards
 //         return;
 //     }
 // }
 
+void Actuator::actMotorStraight(String policy)
+{
+    if (policy == "exit")
+    {
+        // go forward and delay
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(100);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(100);
+        delay(1000);
+        return;
+    }
+}
+
 void Actuator::stopMotor()
 {
     leftMotor->run(RELEASE);
+    leftMotor->setSpeed(0);
     rightMotor->run(RELEASE);
+    rightMotor->setSpeed(0);
 }
 
 void Actuator::actClaw(String policy)
