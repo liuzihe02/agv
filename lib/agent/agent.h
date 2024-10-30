@@ -163,7 +163,7 @@ private:
     // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
     String paths[NUM_OF_PATHS][MAX_NUM_JUNCTIONS] = 
     {  
-        {"start_forward","turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
+        {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
 
         {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
         {"start_backward", "turn_180_clockwise", "straight_forward", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // Disposal back to factory
