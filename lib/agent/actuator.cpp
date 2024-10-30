@@ -154,6 +154,37 @@ void Actuator::actMotorTurn(String policy)
         delay(1900);
         return;
     }
+
+    if(policy == "turn_left&park")
+    {
+        // just delay to see lag
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1850);
+
+        // keep left stationary and turn right only
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(250);
+        delay(2200);
+        
+        // pause
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1850);
+
+        // move forward a set distance (ideally until ultrasonic but not yet implemented)
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(100);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(100);
+        delay(1000);
+    }
 }
 
 // void Actuator::actMotorStraight(String policy)
