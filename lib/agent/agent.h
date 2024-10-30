@@ -1,3 +1,5 @@
+
+
 // these are header guards to prevent multiple inclusions of the same header file
 #ifndef AGENT_H
 #define AGENT_H
@@ -5,7 +7,9 @@
 // relevant libraries
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
+#include <Servo.h>
 #include <assert.h>
+
 
 /**
  * FORWARD DECLARATIONS
@@ -29,18 +33,34 @@ class Agent;
  */
 
 // total number of line sensors
-const int NUM_LINE_SENSORS = 4;
+const int NUM_LINE_SENSORS = 5;
+
+// total number of magnetic sensors
+const int NUM_MAGNETIC_SENSORS = 2;
+
 // Pin assignments for sensors
 const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
-    8,  // 0: FRONT
+    8,  // 0: FRONTLEFT
     9,  // 1: BACK
     10, // 2: LEFT
-    11  // 3: RIGHT
+    11, // 3: RIGHT
+    12  // 4: FRONTRIGHT
+};
+
+const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
+    6,
+    7,
 };
 
 // motor pins
-const int LEFT_MOTOR_PIN = 3;
-const int RIGHT_MOTOR_PIN = 2;
+const int LEFT_MOTOR_PIN = 2;
+const int RIGHT_MOTOR_PIN = 3;
+
+// claw pin
+const int CLAW_PIN = 13;
+
+// LED pin
+const int LED_PIN = 4;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
@@ -62,12 +82,18 @@ public:
     Sensor();
     void setup();
 
-    // read and return the line sensor values as an array
-    int *getLineReadings();
+    //  update the values to the line sensor values array, and return a reference to this array
+    int *getLineSensorReadings();
+    // read the magnetic sensor readings and return it, need to store this array unfortunately
+    int *getMagneticSensorReadings();
 
 private:
-    // The actual values of line sensors as an array
+    // The actual values of line sensors as an array, this is stored
+    // we must store this as an instance variable
+    // suppose we tried to not store this and have getLineReadings return an array
+    // the pointer cannot find the array as array storage is freed after function executes
     int lineSensorValues[NUM_LINE_SENSORS];
+    int magneticSensorValues[NUM_MAGNETIC_SENSORS];
 };
 
 class Actuator
@@ -77,16 +103,34 @@ public:
     void setup();
 
     // core functions
-    void actClaw(); // state variables as arguments yet to be determined
-    // this is a single time step, which instructs the robots on how to move
-    void actMotor(String dir);
+    void actClaw(String policy);
+    // this wrapper function basically calls the actual actMotor functions to move the thing
+    // just directs which one to call
+    void actMotor(String policy);
     void stopMotor();
 
+    // toggles the LED
+    void actLED(String policy);
+
 private:
-    // this object controls both left and right motors
+    // this object controls both left and right motors for movement
     Adafruit_MotorShield AFMS;
     Adafruit_DCMotor *leftMotor;
     Adafruit_DCMotor *rightMotor;
+
+    // claw motor object
+    Servo clawServo;
+    // store position for servo
+    int clawPos;
+
+    // actMotor will call these functions
+
+    // a single step without any delay, this is mainly for line following
+    void actMotorStep(String policy);
+    // try to get it to make a complete turn
+    void actMotorTurn(String policy);
+    // Straight forward or back with delay
+    void actMotorStraight(String policy);
 };
 
 class Agent
@@ -102,16 +146,25 @@ private:
     Sensor sensor;
     Actuator actuator;
 
+    // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
+    String pathToFactory[10] = {"straight_forward", "turn_right","straight_forward","straight_forward", "turn_left", "turn_left","straight_forward","straight_forward", "turn_right", "turn_left&park", };
+
+    // Counts up which junction we are on in the path, incremented whenever a junction is detected.
+    int pathCounter;
+
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
-    String policyMotor(int *lineSensorValues);
-    
-    // Turning function
-    String turn(int *lineSensorValues);
+    // also takes in a specific path to follow
+    String policyMotor(int *lineSensorValues, String *path);
+    // policy for claw
+    String policyClaw(int *lineSensorValues);
+    // policy to decide how LED lights up  
+    String policyLED(int *magneticSensorValues);
 
     // these are to handle push button activation
     bool isRunning;
+
     // this will be returned by millis to track when the switch was last activated
     unsigned long lastDebounceTime;
 };

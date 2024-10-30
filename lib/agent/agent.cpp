@@ -18,8 +18,13 @@ void Agent::setup()
     // calls the sensor and actuator setup
     sensor.setup();
     actuator.setup();
+
+    // LED setup
+    pinMode(LED_PIN, OUTPUT);
+
     this->isRunning = false;
     this->lastDebounceTime = 0;
+    this->pathCounter = 0; // starts program.
     Serial.println("Agent setup complete");
 }
 
@@ -35,26 +40,30 @@ void Agent::run()
         // stop running if the status is false
         return;
     }
+
     // continue running
     else
     {
         // Get the updated sensor values
-        int *lineSensorValues = sensor.getLineReadings();
+        int *lineSensorValues = sensor.getLineSensorReadings();
+        // int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
-        // Print the sensor values
-        Serial.println("Moving Motor. The Sensor Values are:");
-        Serial.print("Front: ");
-        Serial.print(lineSensorValues[0]);
-        Serial.print(", Back: ");
-        Serial.print(lineSensorValues[1]);
-        Serial.print(", Left: ");
-        Serial.print(lineSensorValues[2]);
-        Serial.print(", Right: ");
-        Serial.println(lineSensorValues[3]);
+        // // Print the sensor values
+        // Serial.println("Moving Motor. The Line Sensor Values are:");
+        // Serial.print("Front: ");
+        // Serial.print(lineSensorValues[0]);
+        // Serial.print(", Back: ");
+        // Serial.print(lineSensorValues[1]);
+        // Serial.print(", Left: ");
+        // Serial.print(lineSensorValues[2]);
+        // Serial.print(", Right: ");
+        // Serial.println(lineSensorValues[3]);
 
-        String motorDirection = policyMotor(lineSensorValues);
+        String motorPolicy = policyMotor(lineSensorValues, pathToFactory);
+        actuator.actMotor(motorPolicy);
 
-        actuator.actMotor(motorDirection);
+        // String clawPolicy = policyClaw(magneticSensorValues);
+        // actuator.actClaw(clawPolicy);
     }
 
     // // Add a delay to make the output readable
@@ -79,19 +88,30 @@ void Agent::toggleRunAgent()
             Serial.println("TOGGLE ACTIVATED");
             // toggle the state of isRunning
             isRunning = !isRunning;
+            if (isRunning == true)
+            {
+                // Resets program path
+                pathCounter = 0;
+            }
             lastDebounceTime = millis();
         }
     }
 }
 
-String Agent::policyMotor(int *lineSensorValues)
+String Agent::policyMotor(int *lineSensorValues, String *path)
 {
-    int frontLine = lineSensorValues[0];
+    // the sensors are like
+    //     frontLeft frontRight
+    // left                     right
+    //            back
+    int frontLeftLine = lineSensorValues[0];
     int backLine = lineSensorValues[1];
     int leftLine = lineSensorValues[2];
     int rightLine = lineSensorValues[3];
+    int frontRightLine = lineSensorValues[4];
 
     // current strategy
+    // Whenever run into a junction, perform the current step in path and increment the program counter to execute the next step at the next
 
     // check if its on a straight line. if it is, keep going front
     // when it meets a T junction, always go right
@@ -100,38 +120,94 @@ String Agent::policyMotor(int *lineSensorValues)
     // when it meets a left turn, turn left
     // when it meets a right turn, go right
 
-    // else: error correction - keep going straight until back sensor is on the line again. 
+    // else: error correction - keep going in a straight line until back sensor detects the line again.
 
     // Assuming 1 means the sensor detects a line, and 0 means it doesn't
 
     // Check if it's on a straight line
-    if (frontLine == 1 && backLine == 1 && leftLine == 0 && rightLine == 0)
+    if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 1)
     {
-        return "forward";
+        digitalWrite(LED_PIN, LOW);
+        return "step_forward";
     }
 
-    // T junction (always go right)
-    if (frontLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
+    // -|- cross (Detects if we're in a blue square)
+    // note only one of middle 2 needs to be one
+    // this is causing a TON of problems, thinking the blue square is a real junction
+    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        return "right";
+        digitalWrite(LED_PIN, LOW);
+        return "step_forward";
     }
 
-    // |- junction (always go front)
-    if (frontLine == 1 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    // T junction
+    if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        return "rightTurn";
+        pathCounter += 1; // increments counter first when it comes across a junction.
+        // return the policy decision
+        digitalWrite(LED_PIN, HIGH);
+        return path[pathCounter - 1];
     }
 
-    // -| junction (always go front)
-    if (frontLine == 1 && leftLine == 1 && rightLine == 0 && backLine == 1)
+    // |- junction
+    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        return "leftTurn";
+        // double check by doing the sensor reading again; not the best practice but still
+        delay(100);
+        int *lineSensorValues = sensor.getLineSensorReadings();
+        int frontLeftLine = lineSensorValues[0];
+        int backLine = lineSensorValues[1];
+        int leftLine = lineSensorValues[2];
+        int rightLine = lineSensorValues[3];
+        int frontRightLine = lineSensorValues[4];
+        // fake, actually a blue cross
+        // if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
+        if (leftLine == 1)
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "straight_forward";
+        }
+        // real |- junction
+        else
+        {
+            pathCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[pathCounter - 1];
+        }
     }
 
-    // Left turn, regardless of back sensor
-    if (frontLine == 0 && leftLine == 1 && rightLine == 0 )
+    // -| junction
+    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        return "left";
+        // double check by doing the sensor reading again; not the best practice but still
+        delay(100);
+        int *lineSensorValues = sensor.getLineSensorReadings();
+        int frontLeftLine = lineSensorValues[0];
+        int backLine = lineSensorValues[1];
+        int leftLine = lineSensorValues[2];
+        int rightLine = lineSensorValues[3];
+        int frontRightLine = lineSensorValues[4];
+        // fake, actually a cross
+        // if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
+        if (rightLine == 1)
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "straight_forward";
+        }
+        // real |- junction
+        else
+        {
+            pathCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[pathCounter - 1];
+        }
+    }
+
+    // right corner junction (right turn only)
+    if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
+    {
+        digitalWrite(LED_PIN, LOW);
+        return "turn_right";
     }
 
     // if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
@@ -139,22 +215,61 @@ String Agent::policyMotor(int *lineSensorValues)
     //     return "left";
     // }
 
-    // right turn, regardless of back sensor
-    if (frontLine == 0 && leftLine == 0 && rightLine == 1)
+    // left corner junction (left turn only)
+    if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        return "right";
-    }
-    // redundant "backline variable"
-    // if (frontLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 0)
-    // {
-    //     return "right";
-    // }
-
-    else if (backLine == 1) // If none of the above conditions are met, implement error correction
-    {
-        return "continue"; // Continue previous action (should be a turn in either direction)
+        digitalWrite(LED_PIN, LOW);
+        return "turn_left";
     }
 
-    // Otherwise if back is off, keep moving forward until backLine is back on the line
-    return "forward"; // Keep turning right until it finds a line
+    // line following - shift left
+    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
+    {
+        digitalWrite(LED_PIN, LOW);
+        return "step_left";
+    }
+
+    // line following - shift right
+    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
+    {
+        digitalWrite(LED_PIN, LOW);
+        return "step_right";
+    }
+
+    else if (backLine == 1)
+    {
+        digitalWrite(LED_PIN, LOW);
+        //  continue doing what it was before
+        return "continue";
+    }
+
+    digitalWrite(LED_PIN, LOW);
+    //  If none of the above conditions are met, implement error correction
+    return "step_forward"; // Keep going forward until it finds a line
+}
+
+String policyClaw(int *magneticSensorValues)
+{
+    // check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
+    {
+        return "claw_grab";
+    }
+    else if (magneticSensorValues[0] == 1)
+    {
+        return "claw_release";
+    }
+}
+
+String policyLED(int *magneticSensorValues)
+{
+    // check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
+    {
+        return "LED_off";
+    }
+    else if (magneticSensorValues[0] == 1)
+    {
+        return "LED_on";
+    }
 }
