@@ -177,7 +177,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // continue previous action and wait for consistent readings
         else
         {
-            return "continue";
+            return "step_forward";
         }
     }
 
@@ -195,7 +195,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // continue previous action and wait for consistent readings
         else
         {
-            return "continue";
+            return "step_forward";
         }
     }
 
@@ -213,22 +213,42 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // continue previous action and wait for consistent readings
         else
         {
-            return "continue";
+            return "step_forward";
         }
     }
 
     // right corner junction (right turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
-        return "turn_right";
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed
+        if (isBufferConsistent(lineSensorBuffer))
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "turn_right";
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
+        }
     }
 
     // left corner junction (left turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
-        return "turn_left";
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed
+        if (isBufferConsistent(lineSensorBuffer))
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "turn_left";
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
+        }
     }
 
     // line following - shift left
