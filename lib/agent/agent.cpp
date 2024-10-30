@@ -44,8 +44,8 @@ void Agent::run()
     // continue running
     else
     {
-        // Get the updated sensor values
-        int *lineSensorValues = sensor.getLineSensorReadings();
+        // Get the updated sensor values as a history/buffer
+        int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
         // int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
         // // Print the sensor values
@@ -59,7 +59,7 @@ void Agent::run()
         // Serial.print(", Right: ");
         // Serial.println(lineSensorValues[3]);
 
-        String motorPolicy = policyMotor(lineSensorValues, pathToFactory);
+        String motorPolicy = policyMotor(lineSensorBuffer, pathToFactory);
         actuator.actMotor(motorPolicy);
 
         // String clawPolicy = policyClaw(magneticSensorValues);
@@ -78,7 +78,6 @@ void Agent::run()
  */
 void Agent::toggleRunAgent()
 {
-    // TODO: not sure if this is LOW or HIGH
     if (digitalRead(PUSH_BUTTON_PIN) == HIGH)
 
     {
@@ -98,19 +97,43 @@ void Agent::toggleRunAgent()
     }
 }
 
-String Agent::policyMotor(int *lineSensorValues, String *path)
+String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path)
 {
     // the sensors are like
-    //     frontLeft frontRight
+    //      frontLeft frontRight
     // left                     right
-    //            back
-    int frontLeftLine = lineSensorValues[0];
-    int backLine = lineSensorValues[1];
-    int leftLine = lineSensorValues[2];
-    int rightLine = lineSensorValues[3];
-    int frontRightLine = lineSensorValues[4];
+    //
+    //             back
 
-    // current strategy
+    // Get most recent readings from the last row of buffer
+    int frontLeftLine = lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE - 1][0];
+    int backLine = lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE - 1][1];
+    int leftLine = lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE - 1][2];
+    int rightLine = lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE - 1][3];
+    int frontRightLine = lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE - 1][4];
+
+    // CURRENT STRATEGY
+
+    // Whenever it runs into a junction, before it confirms it,
+    // need to check the latest reading is same as everything else in the buffer
+
+    // Helper function to check if all readings in buffer are consistent
+    auto isBufferConsistent = [](int(*buffer)[NUM_LINE_SENSORS]) -> bool
+    {
+        // for first row until second last row
+        for (int i = 0; i < LINE_SENSOR_BUFFER_SIZE - 1; i++)
+        {
+            for (int j = 0; j < NUM_LINE_SENSORS; j++)
+            {
+                if (buffer[i][j] != buffer[i + 1][j])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
     // Whenever run into a junction, perform the current step in path and increment the program counter to execute the next step at the next
 
     // check if its on a straight line. if it is, keep going front
@@ -143,71 +166,72 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // T junction
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        pathCounter += 1; // increments counter first when it comes across a junction.
-        // return the policy decision
-        digitalWrite(LED_PIN, HIGH);
-        return path[pathCounter - 1];
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed as a junction
+        if (isBufferConsistent(lineSensorBuffer))
+        {
+            pathCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[pathCounter - 1];
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
+        }
     }
 
     // |- junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        // double check by doing the sensor reading again; not the best practice but still
-        delay(100);
-        int *lineSensorValues = sensor.getLineSensorReadings();
-        int frontLeftLine = lineSensorValues[0];
-        int backLine = lineSensorValues[1];
-        int leftLine = lineSensorValues[2];
-        int rightLine = lineSensorValues[3];
-        int frontRightLine = lineSensorValues[4];
-        // fake, actually a blue cross
-        // if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
-        if (leftLine == 1)
-        {
-            digitalWrite(LED_PIN, LOW);
-            return "straight_forward";
-        }
-        // real |- junction
-        else
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed as a junction
+        if (isBufferConsistent(lineSensorBuffer))
         {
             pathCounter += 1;
             digitalWrite(LED_PIN, HIGH);
             return path[pathCounter - 1];
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
         }
     }
 
     // -| junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        // double check by doing the sensor reading again; not the best practice but still
-        delay(100);
-        int *lineSensorValues = sensor.getLineSensorReadings();
-        int frontLeftLine = lineSensorValues[0];
-        int backLine = lineSensorValues[1];
-        int leftLine = lineSensorValues[2];
-        int rightLine = lineSensorValues[3];
-        int frontRightLine = lineSensorValues[4];
-        // fake, actually a cross
-        // if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
-        if (rightLine == 1)
-        {
-            digitalWrite(LED_PIN, LOW);
-            return "straight_forward";
-        }
-        // real |- junction
-        else
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed as a junction
+        if (isBufferConsistent(lineSensorBuffer))
         {
             pathCounter += 1;
             digitalWrite(LED_PIN, HIGH);
             return path[pathCounter - 1];
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
         }
     }
 
     // right corner junction (right turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 0 && rightLine == 1 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
-        return "turn_right";
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed
+        if (isBufferConsistent(lineSensorBuffer))
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "turn_right";
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
+        }
     }
 
     // if (frontLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 0)
@@ -218,8 +242,18 @@ String Agent::policyMotor(int *lineSensorValues, String *path)
     // left corner junction (left turn only)
     if (frontRightLine == 0 && frontLeftLine == 0 && leftLine == 1 && rightLine == 0 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
-        return "turn_left";
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed
+        if (isBufferConsistent(lineSensorBuffer))
+        {
+            digitalWrite(LED_PIN, LOW);
+            return "turn_left";
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_forward";
+        }
     }
 
     // line following - shift left

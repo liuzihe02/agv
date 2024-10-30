@@ -54,10 +54,10 @@ void Actuator::actMotor(String policy)
         actMotorTurn(policy);
     }
 
-    else if (policy.startsWith("straight"))
-    {
-        actMotorStraight(policy);
-    }
+    // else if (policy.startsWith("straight"))
+    // {
+    //     actMotorStraight(policy);
+    // }
 
     else if (policy == "continue")
     {
@@ -153,7 +153,7 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1800);
+        delay(2200);
         return;
     }
 
@@ -171,24 +171,24 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(0);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1800);
+        delay(1900);
         return;
     }
 }
 
-void Actuator::actMotorStraight(String policy)
-{
-    if (policy == "straight_forward")
-    {
-        // go forward and delay
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
-        delay(1000);
-        return;
-    }
-}
+// void Actuator::actMotorStraight(String policy)
+// {
+//     if (policy == "straight_forward")
+//     {
+//         // go forward and delay
+//         leftMotor->run(FORWARD);
+//         leftMotor->setSpeed(100);
+//         rightMotor->run(FORWARD);
+//         rightMotor->setSpeed(100);
+//         delay(1000);
+//         return;
+//     }
+// }
 
 void Actuator::stopMotor()
 {
