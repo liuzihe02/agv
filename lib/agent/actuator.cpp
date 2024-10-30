@@ -133,7 +133,7 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(2200);
+        delay(2100);
         return;
     }
 
