@@ -340,12 +340,12 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         return "step_right";
     }
 
-    else if (backLine == 1)
-    {
-        digitalWrite(LED_PIN, LOW);
-        //  continue doing what it was before
-        return "continue";
-    }
+    // else if (backLine == 1)
+    // {
+    //     digitalWrite(LED_PIN, LOW);
+    //     //  continue doing what it was before
+    //     return "continue";
+    // }
 
     digitalWrite(LED_PIN, LOW);
     //  If none of the above conditions are met, implement error correction

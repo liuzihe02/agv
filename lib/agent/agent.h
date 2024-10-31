@@ -51,6 +51,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 };
 
 // How many time steps to store previous line sensor values
+// around 20 works
 const int LINE_SENSOR_BUFFER_SIZE = 20;
 
 // placement for where the magnetic sensor pins go
@@ -180,13 +181,13 @@ private:
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"}, // Start to factory
-                                                                                            // path contaminated and ending at contaminated area
-            {"start_backward", "turn_right", "straight_forward", "turn_right", "end_c_c"},  // Factory to disposal area
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},                          // Start to factory
+                                                                                                                     // path contaminated and ending at contaminated area
+            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"}, // Factory to disposal area
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {300, 300}; // Size determined automatically
+    int const endCounterCounts[2] = {300, 300}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;

@@ -72,13 +72,13 @@ void Actuator::actMotor(String policy)
 
 void Actuator::actMotorStep(String policy)
 {
-    // delay here causes it to turn after it detects the T junctions
+    // right motor is slightly weaker, need to compensate for this
     if (policy == "step_forward")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(205);
         return;
     }
     else if (policy == "step_backward")
@@ -86,7 +86,7 @@ void Actuator::actMotorStep(String policy)
         leftMotor->run(BACKWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(205);
         return;
     }
     else if (policy == "step_left")
@@ -129,11 +129,12 @@ void Actuator::actMotorTurn(String policy)
         delay(1800);
 
         // keep left stationary and turn right only
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
+        leftMotor->run(BACKWARD);
+        // remember left is slightly stronger
+        leftMotor->setSpeed(70);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1900);
+        delay(1600);
         return;
     }
 
@@ -144,14 +145,14 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(RELEASE);
         rightMotor->setSpeed(0);
-        delay(1850);
+        delay(1800);
 
         // keep right stationary and turn left only
-        rightMotor->run(RELEASE);
-        rightMotor->setSpeed(0);
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(90);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1800);
+        delay(1430);
         return;
     }
 }
