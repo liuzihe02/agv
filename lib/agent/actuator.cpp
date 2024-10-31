@@ -59,11 +59,6 @@ void Actuator::actMotor(String policy)
         actMotorStraight(policy);
     }
 
-    else if (policy.startsWith("end"))
-    {
-        actMotorEnd(policy);
-    }
-
     else if (policy == "continue")
     {
         return;
@@ -138,7 +133,7 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(2100);
+        delay(1850);
         return;
     }
 
@@ -156,7 +151,7 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(0);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1900);
+        delay(1800);
         return;
     }
 }
@@ -170,69 +165,7 @@ void Actuator::actMotorStraight(String policy)
         leftMotor->setSpeed(100);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(100);
-        delay(1000);
-        return;
-    }
-}
-
-void Actuator::actMotorEnd(String policy)
-{
-    if (policy == "end_f_turn_left")
-    {
-        // just delay to see lag
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
-        rightMotor->run(RELEASE);
-        rightMotor->setSpeed(0);
-        delay(1850);
-
-        // keep left stationary and turn right only
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(250);
-        delay(1900);
-
-        // go forward for abit
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(250);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(250);
-        delay(1000);
-
-        return;
-    }
-
-    if (policy == "end_c")
-    {
-        // go forward for abit
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(250);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(250);
-        delay(2100);
-    }
-}
-
-// void Actuator::actMotorStart(String policy)
-// {
-//     if (policy == "start_backward")
-//     {
-//         // basically just step backwards
-//         return;
-//     }
-// }
-
-void Actuator::actMotorStraight(String policy)
-{
-    if (policy == "exit")
-    {
-        // go forward and delay
-        leftMotor->run(FORWARD);
-        leftMotor->setSpeed(100);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(100);
-        delay(1000);
+        delay(500);
         return;
     }
 }
@@ -245,29 +178,29 @@ void Actuator::stopMotor()
     rightMotor->setSpeed(0);
 }
 
-void Actuator::actClaw(String policy)
-{
-    if (policy == "claw_grab")
-    {
-        for (clawPos = 0; clawPos <= 180; clawPos += 1)
-        { // goes from 0 degrees to 180 degrees
-            // in steps of 1 degree
-            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
-            delay(15);                // waits 15 ms for the servo to reach the position
-        }
-    }
-    else if (policy == "claw_release")
-    {
-        for (clawPos = 180; clawPos <= 0; clawPos -= 1)
-        { // goes from 180 to 0
-            // in steps of 1 degree
-            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
-            delay(15);                // waits 15 ms for the servo to reach the position
-        }
-    }
-}
+// void Actuator::actClaw(String policy)
+// {
+//     if (policy == "claw_grab")
+//     {
+//         for (clawPos = 0; clawPos <= 180; clawPos += 1)
+//         { // goes from 0 degrees to 180 degrees
+//             // in steps of 1 degree
+//             clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+//             delay(15);                // waits 15 ms for the servo to reach the position
+//         }
+//     }
+//     else if (policy == "claw_release")
+//     {
+//         for (clawPos = 180; clawPos <= 0; clawPos -= 1)
+//         { // goes from 180 to 0
+//             // in steps of 1 degree
+//             clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+//             delay(15);                // waits 15 ms for the servo to reach the position
+//         }
+//     }
+// }
 
-void Actuator::actLED(String policy)
-{
-    // not implemented yet
-}
+// void Actuator::actLED(String policy)
+// {
+//     // not implemented yet
+// }

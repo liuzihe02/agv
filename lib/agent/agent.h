@@ -19,6 +19,10 @@
  * Given the environment, sensors collect the relevant state variables from the environment
  * Policies takes in these state variables, and chooses an appropriate action
  * Actuators then executes these actions in the real world
+ *
+ * Note:
+ * We define the junction as a decision, where it acts on a value from allPaths (list of junctions)
+ *
  */
 
 // receives environment data
@@ -170,13 +174,19 @@ private:
     // these are stuff related to the overall coordination of paths
     static const int NUM_ROWS = 2;  // Number of paths
     static const int NUM_COLS = 20; // Max number of junctions per path
-    // all the paths stored as a 2D matrix
-    String allPaths[NUM_ROWS][NUM_COLS] = {
-        // path from start to the factory, we call this 0
-        {"turn_right", "turn_left", "turn_left", "turn_right", "end_0"},
-        // path from the factory to the contamination area
-        {"exit", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to Disposal area
+                                    // all the paths stored as a 2D matrix
+
+    // these store all the junction decisions
+    String allPaths[NUM_ROWS][NUM_COLS] =
+        {
+            // path zero and ending at the factory
+            {"straight_forward", "turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"}, // Start to factory
+                                                                                                                // path contaminated and ending at contaminated area
+            {"start_backward", "turn_right", "turn_right", "end_c_c"},                                          // Factory to disposal area
     };
+
+    // each of this number represents how many loops to go forward for
+    int const endCounterCounts[2] = {700, 700}; // Size determined automatically
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;
@@ -184,16 +194,24 @@ private:
     // selects which path out of 10 we are on
     int pathCounter;
 
+    // count how many loops to do the ending condition
+    int endCounter;
+
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
     // this information is currently a 2D matrix of the previous x number of line sensor values
-    // also takes in a specific path to follow
+
+    // also takes in a specific path of policies to follow
+    // returns a struct (tuple) of (String,boolean)
     String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    // String policyClaw(int *lineSensorValues);
+    String policyClaw(int *lineSensorValues);
     // policy to decide how LED lights up
     String policyLED(int *magneticSensorValues);
+
+    // given a policy, invert it to go backwards properly
+    String invertPolicyMotor(String policy);
 
     // these are to handle push button activation
     bool isRunning;
