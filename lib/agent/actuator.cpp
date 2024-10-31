@@ -30,6 +30,11 @@ void Actuator::setup()
             ;
     }
 
+    // set up LED
+    pinMode(LED_PIN_B, OUTPUT);
+    pinMode(LED_PIN_R, OUTPUT);
+    pinMode(LED_PIN_G, OUTPUT);
+
     // set up claw actuator
     clawServo.attach(CLAW_PIN);
     // initialize to zero position
@@ -54,10 +59,15 @@ void Actuator::actMotor(String policy)
         actMotorTurn(policy);
     }
 
-    // else if (policy.startsWith("straight"))
-    // {
-    //     actMotorStraight(policy);
-    // }
+    else if (policy.startsWith("straight"))
+    {
+        actMotorStraight(policy);
+    }
+
+    else if (policy.startsWith("end"))
+    {
+        actMotorEnd(policy);
+    }
 
     else if (policy == "continue")
     {
@@ -155,51 +165,63 @@ void Actuator::actMotorTurn(String policy)
         return;
     }
 
-    if(policy == "turn_left&park")
-    {
-        // just delay to see lag
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
-        rightMotor->run(RELEASE);
-        rightMotor->setSpeed(0);
-        delay(1850);
+    // if(policy == "turn_left&park")
+    // {
+    //     // just delay to see lag
+    //     leftMotor->run(RELEASE);
+    //     leftMotor->setSpeed(0);
+    //     rightMotor->run(RELEASE);
+    //     rightMotor->setSpeed(0);
+    //     delay(1850);
 
-        // keep left stationary and turn right only
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
-        rightMotor->run(FORWARD);
-        rightMotor->setSpeed(250);
-        delay(2200);
+    //     // keep left stationary and turn right only
+    //     leftMotor->run(RELEASE);
+    //     leftMotor->setSpeed(0);
+    //     rightMotor->run(FORWARD);
+    //     rightMotor->setSpeed(250);
+    //     delay(2200);
         
-        // pause
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
-        rightMotor->run(RELEASE);
-        rightMotor->setSpeed(0);
-        delay(1850);
+    //     // pause
+    //     leftMotor->run(RELEASE);
+    //     leftMotor->setSpeed(0);
+    //     rightMotor->run(RELEASE);
+    //     rightMotor->setSpeed(0);
+    //     delay(1850);
 
-        // move forward a set distance (ideally until ultrasonic but not yet implemented)
+    //     // move forward a set distance (ideally until ultrasonic but not yet implemented)
+    //     leftMotor->run(FORWARD);
+    //     leftMotor->setSpeed(100);
+    //     rightMotor->run(FORWARD);
+    //     rightMotor->setSpeed(100);
+    //     delay(1000);
+    // }
+}
+
+void Actuator::actMotorEnd(String policy)
+{
+    if (policy == "end_f_turn_left")
+    {
+        actMotorTurn("turn_left");
+        for (int i=0; i<=500; i++){
+                                                                                                                                       
+        }
+        return;
+    }
+}
+
+void Actuator::actMotorStraight(String policy)
+{
+    if (policy == "straight_forward")
+    {
+        // go forward and delay
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(100);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(100);
         delay(1000);
+        return;
     }
 }
-
-// void Actuator::actMotorStraight(String policy)
-// {
-//     if (policy == "straight_forward")
-//     {
-//         // go forward and delay
-//         leftMotor->run(FORWARD);
-//         leftMotor->setSpeed(100);
-//         rightMotor->run(FORWARD);
-//         rightMotor->setSpeed(100);
-//         delay(1000);
-//         return;
-//     }
-// }
 
 void Actuator::stopMotor()
 {
@@ -231,5 +253,31 @@ void Actuator::actClaw(String policy)
 
 void Actuator::actLED(String policy)
 {
+    if(millis()%(LED_DELAY)==0)
+    {
+        if (millis()%(LED_DELAY*2)==0)
+        {
+            digitalWrite(LED_PIN_B, LOW);
+        }
+        else
+        {
+            digitalWrite(LED_PIN_B, HIGH);
+        }
+    }
+
+
+    if (policy == "LED_ON")
+    {
+        digitalWrite(LED_PIN_G, HIGH);
+    }
+    else if (policy == "LED_OFF")
+    {
+        digitalWrite(LED_PIN_R, HIGH);
+    }
+    else{
+        digitalWrite(LED_PIN_G, LOW);
+        digitalWrite(LED_PIN_R, LOW);
+    }
     // not implemented yet
+    return;
 }

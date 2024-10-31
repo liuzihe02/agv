@@ -63,12 +63,17 @@ const int RIGHT_MOTOR_PIN = 3;
 const int CLAW_PIN = 13;
 
 // LED pin
-const int LED_PIN = 4;
+const int LED_PIN_B = 4;
+const int LED_PIN_G = 3;
+const int LED_PIN_R = 1;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
 // delay for the debouncing
 const unsigned long DEBOUNCE_DELAY = 500;
+
+// delay for the LED flashing
+const unsigned int LED_DELAY = 500;
 
 // rate for arduino
 const int BAUD_RATE = 9600;
@@ -142,6 +147,8 @@ private:
     void actMotorTurn(String policy);
     // Straight forward or back with delay
     void actMotorStraight(String policy);
+    // ending procedures
+    void actMotorEnd(String policy);
 };
 
 class Agent
@@ -186,7 +193,6 @@ private:
 
     // Counts up which junction we are on in the path, incremented whenever a junction is detected.
     int pathCounter;
-
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
@@ -194,9 +200,10 @@ private:
     // also takes in a specific path to follow
     String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    // +String policyClaw(int *lineSensorValues);
+    // String policyClaw(int *lineSensorValues);
+
     // policy to decide how LED lights up
-    String policyLED(int *magneticSensorValues);
+    String policyLED();//int *magneticSensorValues);
 
     // these are to handle push button activation
     bool isRunning;

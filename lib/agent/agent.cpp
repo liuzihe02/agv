@@ -20,7 +20,6 @@ void Agent::setup()
     actuator.setup();
 
     // LED setup
-    pinMode(LED_PIN, OUTPUT);
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
@@ -46,7 +45,10 @@ void Agent::run()
     {
         // Get the updated sensor values as a history/buffer
         int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
-        // int *magneticSensorValues = sensor.getMagneticSensorReadings();
+
+        // Dummy function
+        int *magneticSensorValues;
+        //int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
         // // Print the sensor values
         // Serial.println("Moving Motor. The Line Sensor Values are:");
@@ -61,6 +63,9 @@ void Agent::run()
 
         String motorPolicy = policyMotor(lineSensorBuffer, pathToFactory);
         actuator.actMotor(motorPolicy);
+
+        String ledPolicy = policyLED();//magneticSensorValues);
+        actuator.actLED(ledPolicy);
 
         // String clawPolicy = policyClaw(magneticSensorValues);
         // actuator.actClaw(clawPolicy);
@@ -150,7 +155,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // Check if it's on a straight line
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
         return "step_forward";
     }
 
@@ -159,7 +163,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // this is causing a TON of problems, thinking the blue square is a real junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
         return "step_forward";
     }
 
@@ -171,7 +174,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             pathCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
             return path[pathCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -189,7 +191,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             pathCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
             return path[pathCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -207,7 +208,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             pathCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
             return path[pathCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -224,7 +224,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed
         if (isBufferConsistent(lineSensorBuffer))
         {
-            digitalWrite(LED_PIN, LOW);
             return "turn_right";
         }
         // continue previous action and wait for consistent readings
@@ -241,7 +240,6 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed
         if (isBufferConsistent(lineSensorBuffer))
         {
-            digitalWrite(LED_PIN, LOW);
             return "turn_left";
         }
         // continue previous action and wait for consistent readings
@@ -254,51 +252,48 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // line following - shift left
     if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
     {
-        digitalWrite(LED_PIN, LOW);
         return "step_left";
     }
 
     // line following - shift right
     if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
     {
-        digitalWrite(LED_PIN, LOW);
         return "step_right";
     }
 
     else if (backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
         //  continue doing what it was before
         return "continue";
     }
 
-    digitalWrite(LED_PIN, LOW);
     //  If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-String policyClaw(int *magneticSensorValues)
-{
-    // check for the FIRST magnetic sensor values only
-    if (magneticSensorValues[0] == 0)
-    {
-        return "claw_grab";
-    }
-    else if (magneticSensorValues[0] == 1)
-    {
-        return "claw_release";
-    }
-}
+// String Agent::policyClaw(int *magneticSensorValues)
+// {
+//     // check for the FIRST magnetic sensor values only
+//     if (magneticSensorValues[0] == 0)
+//     {
+//         return "claw_grab";
+//     }
+//     else if (magneticSensorValues[0] == 1)
+//     {
+//         return "claw_release";
+//     }
+// }
 
-String policyLED(int *magneticSensorValues)
+String Agent::policyLED()//int *magneticSensorValues)
 {
     // check for the FIRST magnetic sensor values only
-    if (magneticSensorValues[0] == 0)
-    {
-        return "LED_off";
-    }
-    else if (magneticSensorValues[0] == 1)
-    {
-        return "LED_on";
-    }
+    // if (magneticSensorValues[0] == 0)
+    // {
+    //     return "LED_off";
+    // }
+    // else if (magneticSensorValues[0] == 1)
+    // {
+    //     return "LED_on";
+    // }
+    return "hello";
 }
