@@ -180,13 +180,13 @@ private:
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            {"straight_forward", "turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"}, // Start to factory
-                                                                                                                // path contaminated and ending at contaminated area
-            {"start_backward", "turn_right", "turn_right", "end_c_c"},                                          // Factory to disposal area
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"}, // Start to factory
+                                                                                            // path contaminated and ending at contaminated area
+            {"start_backward", "turn_right", "straight_forward", "turn_right", "end_c_c"},  // Factory to disposal area
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {700, 700}; // Size determined automatically
+    int const endCounterCounts[2] = {300, 300}; // Size determined automatically
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;

@@ -88,6 +88,9 @@ void Agent::run()
 
             if (endCounter == endCounterCounts[pathCounter])
             {
+                digitalWrite(LED_PIN, HIGH);
+                delay(500);
+
                 // move to the next path
                 junctionCounter = 0;
                 pathCounter += 1;
@@ -267,16 +270,20 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     }
 
     // inverted T junction, for when its reverting backwards, SHOULD ONLY ENCOUNTER THIS WHEN REVERSING
-    // this should be called only when its going backwards
-    if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 0)
+    // this SHOULD ONLY HAPPEN WHEN IT IS IN BACKWARD MODE
+    // we are currently at start_backward
+    if (path[junctionCounter] == "start_backward" &&
+        (frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 0)
     {
         // readings are consistent, so sudden readings are removed
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            junctionCounter += 1;
+            // move junction counter to the next proper junction
+            junctionCounter = 1;
             digitalWrite(LED_PIN, HIGH);
-            return path[junctionCounter - 1];
+            // I cannot return start_backward, return the junction after start_backward
+            return path[1];
         }
         // continue previous action and wait for consistent readings
         else

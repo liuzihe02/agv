@@ -126,14 +126,14 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(RELEASE);
         rightMotor->setSpeed(0);
-        delay(1850);
+        delay(1800);
 
         // keep left stationary and turn right only
         leftMotor->run(RELEASE);
         leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1850);
+        delay(1900);
         return;
     }
 
