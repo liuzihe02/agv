@@ -191,14 +191,14 @@ void Actuator::actMotorEnd(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(2100);
+        delay(1900);
 
         // go forward for abit
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(2100);
+        delay(1000);
 
         return;
     }

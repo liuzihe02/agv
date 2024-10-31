@@ -289,7 +289,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
 
     digitalWrite(LED_PIN, LOW);
     //  If none of the above conditions are met, implement error correction
-    return "step_forward"; // Keep going forward until it finds a line
+    return "continue"; // Keep going forward until it finds a line
 }
 
 String policyClaw(int *magneticSensorValues)
