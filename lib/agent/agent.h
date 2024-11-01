@@ -69,11 +69,15 @@ const int CLAW_PIN = 13;
 
 // LED pin
 const int LED_PIN = 4;
+const int LED_PIN_B = 1;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
 // delay for the debouncing
 const unsigned long DEBOUNCE_DELAY = 500;
+
+// delay for the LED
+const unsigned long LED_DELAY = 500;
 
 // rate for arduino
 const int BAUD_RATE = 9600;
@@ -184,7 +188,25 @@ private:
             {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},                          // Start to factory
                                                                                                                      // path contaminated and ending at contaminated area
             {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"}, // Factory to disposal area
+        
+            // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
+
+            // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
+            // {"start_backward", "turn_180_clockwise", "straight_forward", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // Disposal back to factory
+
+            // {"start_backward", "turn_right", "turn_right", "straight_forward","turn_right", "place_box"}, //Factory to B1
+            // {"start_backward", "turn_right", "straight_forward", "turn_left", "end_f_turn_right"}, //B1 to Factory
+
+            // {"start_backward", "turn_right", "turn_left", "turn_left", "place_box"}, // Factory to B2;
+            // {"start_backward", "turn_left", "turn_right", "end_f_turn_right"}, // B2 to factory
+
+            // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward","turn_right", "place_box"}, // Factory to B3
+            // {"start_backward", "turn_right", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // B3 to Factory
+
+            // {"start_backward", "turn_right", "turn_left", "straight_forward", "turn_left", "place_box"}, // Factory to B4
+            // {"start_backward", "turn_left", "straight_forward", "turn_right", "end_f_turn_right"}, // B4 to Factory
     };
+    
 
     // each of this number represents how many loops to go forward for
     int const endCounterCounts[2] = {300, 300}; // Size determined manually

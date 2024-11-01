@@ -201,7 +201,11 @@ void Actuator::stopMotor()
 //     }
 // }
 
-// void Actuator::actLED(String policy)
-// {
-//     // not implemented yet
-// }
+void Actuator::actLED(String policy)
+{
+    if (millis()%LED_DELAY==0)
+    {
+        digitalWrite(LED_PIN_B, HIGH);
+    }
+        // not implemented yet
+}

@@ -21,6 +21,7 @@ void Agent::setup()
 
     // LED setup
     pinMode(LED_PIN, OUTPUT);
+    pinMode(LED_PIN_B,OUTPUT);
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
