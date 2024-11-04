@@ -87,7 +87,7 @@ void Agent::run()
 
             if (endCounter == endCounterCounts[pathCounter])
             {
-                digitalWrite(LED_PIN, HIGH);
+                //digitalWrite(LED_PIN, HIGH);
                 delay(500);
 
                 // move to the next path
@@ -237,7 +237,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             junctionCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
+            //digitalWrite(LED_PIN, HIGH);
             return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -255,7 +255,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             junctionCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
+            //digitalWrite(LED_PIN, HIGH);
             return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -277,7 +277,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         {
             // move junction counter to the next proper junction
             junctionCounter = 1;
-            digitalWrite(LED_PIN, HIGH);
+            //digitalWrite(LED_PIN, HIGH);
             // I cannot return start_backward, return the junction after start_backward
             return path[1];
         }
@@ -346,7 +346,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
 String Agent::policyClaw(int *magneticSensorValues)
 {
     // check for the FIRST magnetic sensor values only
-    if (magneticSensorValues[0] == 0)
+    if (magneticSensorValues[0] == 0 && magneticSensorValues[1]==0)
     {
         return "claw_grab";
     }
@@ -356,34 +356,16 @@ String Agent::policyClaw(int *magneticSensorValues)
     }
 }
 
-String Agent::policyLED()//int *magneticSensorValues)
+String Agent::policyLED(int *magneticSensorValues)
 {
-    // check for the FIRST magnetic sensor values only
-    // if (magneticSensorValues[0] == 0)
-    // {
-    //     return "LED_off";
-    // }
-    // else if (magneticSensorValues[0] == 1)
-    // {
-    //     return "LED_on";
-    // }
-    return "hello";
-}
-
-String Agent::invertPolicyMotor(String policy)
-{
-    if (policy == "step_forward")
+    //check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
     {
-        return "step_backward";
+        return "LED_off";
     }
-
-    if (policy == "step_left")
+    else if (magneticSensorValues[0] == 1)
     {
-        return "step_right";
-    }
-    if (policy == "step_right")
-    {
-        return "step_left";
+        return "LED_on";
     }
 }
 

@@ -35,6 +35,7 @@ void Sensor::setup()
         pinMode(MAGNETIC_SENSOR_PINS[i], INPUT);
     }
 
+
     Serial.println("Sensor setup complete");
 }
 
@@ -70,4 +71,16 @@ int *Sensor::updateMagneticSensorReadings()
     }
     // return a reference to the stored array
     return magneticSensorValues;
+}
+
+float (*Sensor::updateUltrasoundSensorReadings()){
+    
+    float dist_t = analogRead(ULTRASOUND_PIN) * MAX_RANGE / ADC_SOLUTION;//
+    for (int i = 0; i < ULTRASOUND_BUFFER_SIZE - 1; i++)
+    {
+        ultrasoundBuffer[i] = ultrasoundBuffer[i+1];
+    }
+    // Read new sensor values and update last row
+    ultrasoundBuffer[ULTRASOUND_BUFFER_SIZE - 1] = dist_t;
+    return ultrasoundBuffer;
 }

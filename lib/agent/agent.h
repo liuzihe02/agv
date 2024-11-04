@@ -54,6 +54,15 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 // around 20 works
 const int LINE_SENSOR_BUFFER_SIZE = 20;
 
+// Ultrasound pin
+const int ULTRASOUND_PIN = A0;
+
+const int MAX_RANGE = 520;//the max measurement value of the module is 520cm(a little bit longer than effective max range)
+const int ADC_SOLUTION  = 1023.0;//ADC accuracy of Arduino UNO is 10bit
+
+//similarly, one for ultrasound 
+const int ULTRASOUND_BUFFER_SIZE = 6;
+
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
     6,
@@ -99,6 +108,9 @@ public:
     int (*updateLineSensorBuffer())[NUM_LINE_SENSORS];
     // update the magnetic sensor readings and return the array, need to store this array unfortunately
     int *updateMagneticSensorReadings();
+    // update the ultrasound sensor readings
+    float (*updateUltrasoundSensorReadings());
+
 
 private:
     // The buffer of all line sensors values as a 2D MATRIX
@@ -115,6 +127,9 @@ private:
 
     // a 1D ARRAY of magnetic sensor values
     int magneticSensorValues[NUM_MAGNETIC_SENSORS];
+
+    // a buffer of ultrasound values
+    float ultrasoundBuffer[ULTRASOUND_BUFFER_SIZE];
 };
 
 class Actuator
