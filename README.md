@@ -40,3 +40,4 @@ Since we're not using the Arduino IDE, we'll have to import libraries ourselves 
   - After line sensing, delayed action to motors
   - Use a buffer to make readings consistent before making a decision
 - Added a double check whenever we encounter `|-` or `-|` junctions, make sure its not a cross
+- Be careful about using `delay`! Delay makes it continue the previous action for some time, NOT stop the robot

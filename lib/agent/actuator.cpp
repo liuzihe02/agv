@@ -26,14 +26,12 @@ void Actuator::setup()
     if (!leftMotor || !rightMotor)
     {
         Serial.println("Motor attachment failed. Check wiring.");
-        while (1)
-            ;
     }
 
     // set up claw actuator
     clawServo.attach(CLAW_PIN);
-    // initialize to zero position
-    clawPos = 0;
+    // initialize to open position
+    clawPos = CLAW_OPEN_POS;
 
     // setup for actuators complete
     Serial.println("Actuator setup complete");
@@ -78,7 +76,7 @@ void Actuator::actMotorStep(String policy)
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(205);
+        rightMotor->setSpeed(206);
         return;
     }
     else if (policy == "step_backward")
@@ -86,7 +84,7 @@ void Actuator::actMotorStep(String policy)
         leftMotor->run(BACKWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(205);
+        rightMotor->setSpeed(206);
         return;
     }
     else if (policy == "step_left")
@@ -128,13 +126,14 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(0);
         delay(1800);
 
-        // keep left stationary and turn right only
+        // keep left stationary and turn right
+        // TODO: NEED to recalibrate this!
         leftMotor->run(BACKWARD);
         // remember left is slightly stronger
-        leftMotor->setSpeed(70);
+        leftMotor->setSpeed(55);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1600);
+        delay(1700);
         return;
     }
 
@@ -147,12 +146,13 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(0);
         delay(1800);
 
-        // keep right stationary and turn left only
+        // TODO: ALWAYS need to recalibrate this
+        //  keep right stationary and turn left only
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(90);
+        rightMotor->setSpeed(65);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1430);
+        delay(1620);
         return;
     }
 }
@@ -179,33 +179,41 @@ void Actuator::stopMotor()
     rightMotor->setSpeed(0);
 }
 
-// void Actuator::actClaw(String policy)
-// {
-//     if (policy == "claw_grab")
-//     {
-//         for (clawPos = 0; clawPos <= 180; clawPos += 1)
-//         { // goes from 0 degrees to 180 degrees
-//             // in steps of 1 degree
-//             clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
-//             delay(15);                // waits 15 ms for the servo to reach the position
-//         }
-//     }
-//     else if (policy == "claw_release")
-//     {
-//         for (clawPos = 180; clawPos <= 0; clawPos -= 1)
-//         { // goes from 180 to 0
-//             // in steps of 1 degree
-//             clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
-//             delay(15);                // waits 15 ms for the servo to reach the position
-//         }
-//     }
-// }
+void Actuator::actClaw(String policy)
+{
+    if (policy == "claw_grab")
+    {
+        // assert its current from open, wants to go to close
+        assert(clawPos == CLAW_OPEN_POS);
+        // goes from 20 to 0 degrees
+        while (clawPos > CLAW_CLOSE_POS)
+        {
+            // in steps of 1 degree
+            clawPos -= 1;
+            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+            delay(15);                // waits 15 ms for the servo to reach the position
+        }
+    }
+    else if (policy == "claw_release")
+    {
+        // assert its going from closed to open
+        assert(clawPos == CLAW_CLOSE_POS);
+        // goes from 0 to 20 degrees
+        while (clawPos < CLAW_OPEN_POS)
+        {
+            // in steps of 1 degree
+            clawPos += 1;
+            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+            delay(15);                // waits 15 ms for the servo to reach the position
+        }
+    }
+}
 
 void Actuator::actLED(String policy)
 {
-    if (millis()%LED_DELAY==0)
+    if (millis() % LED_DELAY == 0)
     {
         digitalWrite(LED_PIN_B, HIGH);
     }
-        // not implemented yet
+    // not implemented yet
 }

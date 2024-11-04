@@ -21,7 +21,7 @@ void Agent::setup()
 
     // LED setup
     pinMode(LED_PIN, OUTPUT);
-    pinMode(LED_PIN_B,OUTPUT);
+    pinMode(LED_PIN_B, OUTPUT);
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
@@ -46,7 +46,7 @@ void Agent::run()
         this->junctionCounter = 0;
         // start the whole program/first path
         this->pathCounter = 0;
-        // initialize the end counter
+        // reset the end counter
         this->endCounter = 0;
         actuator.stopMotor();
         // stop running if the status is false
@@ -62,7 +62,7 @@ void Agent::run()
         // check if we are at the start of the loop, read from the junction counter directly
         if (allPaths[pathCounter][junctionCounter].startsWith("start_backward"))
         {
-
+            Serial.println("Start detected");
             // Get the updated sensor values as a history/buffer
             int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
 
@@ -77,6 +77,7 @@ void Agent::run()
             // overwrite everything to step backward
             else
             {
+                // keep stepping backward until a junction is detected
                 motorPolicy = "step_backward";
             }
         }
@@ -84,14 +85,17 @@ void Agent::run()
         // check if current path has ended; reset the junctionCounter and increment the pathCounter
         else if (allPaths[pathCounter][junctionCounter].startsWith("end"))
         {
+            Serial.println("End detected");
+            Serial.print(endCounter);
             // do a regular movement and increment counter for how many end loops we want
+            // we want to increase the endCounter instead of having a timed delay because
+            // we still want line following
             endCounter += 1;
 
-            if (endCounter == endCounterCounts[pathCounter])
+            // move on to the next path here, right after the encCounter
+            if (endCounter == endCounterCounts[pathCounter] + 1)
             {
                 digitalWrite(LED_PIN, HIGH);
-                delay(500);
-
                 // move to the next path
                 junctionCounter = 0;
                 pathCounter += 1;
@@ -118,8 +122,24 @@ void Agent::run()
             motorPolicy = policyMotor(lineSensorBuffer, allPaths[pathCounter]);
         };
 
+        Serial.println(motorPolicy);
+
+        // move the motor after moving the claw
         // send the relevant policy to the actuator
         actuator.actMotor(motorPolicy);
+
+        // make this claw act after motor
+        //  do the policy for the claw (check if its the last loop in this current path)
+        //  only then do we actually move the claw
+        if (endCounter == endCounterCounts[pathCounter])
+        {
+            this->actuator.stopMotor();
+            delay(5000);
+            String clawPolicy = policyClaw(allPaths[pathCounter]);
+            Serial.println(clawPolicy);
+            actuator.actClaw(clawPolicy);
+            Serial.println("Finished acting claw");
+        }
     }
 }
 
@@ -353,14 +373,16 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-String Agent::policyClaw(int *magneticSensorValues)
+String Agent::policyClaw(String *path)
 {
-    // check for the FIRST magnetic sensor values only
-    if (magneticSensorValues[0] == 0)
+    // make sure we are actually at the end
+    assert(endCounter > 0);
+    // check whether to release or grab
+    if (path[junctionCounter] == "end_0_f")
     {
         return "claw_grab";
     }
-    else if (magneticSensorValues[0] == 1)
+    else if (path[junctionCounter] == "end_c_c")
     {
         return "claw_release";
     }
@@ -379,19 +401,19 @@ String Agent::policyLED(int *magneticSensorValues)
     }
 }
 
-String Agent::invertPolicyMotor(String policy)
-{
-    if (policy == "step_forward")
-    {
-        return "step_backward";
-    }
+// String Agent::invertPolicyMotor(String policy)
+// {
+//     if (policy == "step_forward")
+//     {
+//         return "step_backward";
+//     }
 
-    if (policy == "step_left")
-    {
-        return "step_right";
-    }
-    if (policy == "step_right")
-    {
-        return "step_left";
-    }
-}
+//     if (policy == "step_left")
+//     {
+//         return "step_right";
+//     }
+//     if (policy == "step_right")
+//     {
+//         return "step_left";
+//     }
+// }

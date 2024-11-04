@@ -52,7 +52,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 
 // How many time steps to store previous line sensor values
 // around 20 works
-const int LINE_SENSOR_BUFFER_SIZE = 20;
+const int LINE_SENSOR_BUFFER_SIZE = 15;
 
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
@@ -66,6 +66,10 @@ const int RIGHT_MOTOR_PIN = 3;
 
 // claw pin
 const int CLAW_PIN = 13;
+
+// default claw opening and closing positions, note that close may not be zero
+const int CLAW_CLOSE_POS = 0;
+const int CLAW_OPEN_POS = 20;
 
 // LED pin
 const int LED_PIN = 4;
@@ -155,10 +159,10 @@ private:
     // Straight  decision - forward or back with a timed delay
     void actMotorStraight(String policy);
 
-    // hard coded starting conditions for a single path
-    void actMotorStart(String policy);
-    // hard coded ending conditions for a single path
-    void actMotorEnd(String policy);
+    // // hard coded starting conditions for a single path
+    // void actMotorStart(String policy);
+    // // hard coded ending conditions for a single path
+    // void actMotorEnd(String policy);
 };
 
 class Agent
@@ -182,13 +186,16 @@ private:
                                     // all the paths stored as a 2D matrix
 
     // these store all the junction decisions
+    // these store the start instruction, list of decisions at the junctions, and the end conditions
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},                          // Start to factory
-                                                                                                                     // path contaminated and ending at contaminated area
-            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"}, // Factory to disposal area
-        
+            //{"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
+            //{"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
+            {"turn_right", "end_0_f"},                   // Start to factory
+                                                         // path contaminated and ending at contaminated area
+            {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
+
             // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
 
             // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
@@ -206,10 +213,9 @@ private:
             // {"start_backward", "turn_right", "turn_left", "straight_forward", "turn_left", "place_box"}, // Factory to B4
             // {"start_backward", "turn_left", "straight_forward", "turn_right", "end_f_turn_right"}, // B4 to Factory
     };
-    
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {300, 300}; // Size determined manually
+    int const endCounterCounts[2] = {50, 100}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;
@@ -218,6 +224,7 @@ private:
     int pathCounter;
 
     // count how many loops to do the ending condition
+    // this should be 0 when its not in an end chunk, and non zero when its counting end
     int endCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state
@@ -229,7 +236,7 @@ private:
     // returns a struct (tuple) of (String,boolean)
     String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    String policyClaw(int *lineSensorValues);
+    String policyClaw(String *path);
     // policy to decide how LED lights up
     String policyLED(int *magneticSensorValues);
 
