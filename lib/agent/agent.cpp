@@ -56,10 +56,22 @@ void Agent::run()
     {
         // declare the policy first
         String motorPolicy;
-
+        
         // check if we are at the start of the loop, read from the junction counter directly
         if (allPaths[pathCounter][junctionCounter].startsWith("start_backward"))
         {
+            // if running led flashes
+            if(millis()%(LED_DELAY)==0)
+            {
+                if (millis()%(LED_DELAY*2)==0)
+                {
+                    digitalWrite(LED_PIN_B, LOW);
+                }
+                else
+                {
+                    digitalWrite(LED_PIN_B, HIGH);
+                }
+            }
 
             // Get the updated sensor values as a history/buffer
             int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
@@ -97,6 +109,8 @@ void Agent::run()
                 endCounter = 0;
             }
 
+
+
             // Get the updated sensor values as a history/buffer
             int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
 
@@ -107,7 +121,17 @@ void Agent::run()
         // we know we are in the middle
         else
         {
-
+            if(millis()%(LED_DELAY)==0)
+            {
+                if (millis()%(LED_DELAY*2)==0)
+                {
+                    digitalWrite(LED_PIN_B, LOW);
+                }
+                else
+                {
+                    digitalWrite(LED_PIN_B, HIGH);
+                }
+            }
             // Get the updated sensor values as a history/buffer
             int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
             // int *magneticSensorValues = sensor.getMagneticSensorReadings();
@@ -117,6 +141,7 @@ void Agent::run()
         };
 
         // send the relevant policy to the actuator
+
         actuator.actMotor(motorPolicy);
     }
 }

@@ -209,18 +209,6 @@ void Actuator::stopMotor()
 void Actuator::
 actLED(String policy)
 {
-    if(millis()%(LED_DELAY)==0)
-    {
-        if (millis()%(LED_DELAY*2)==0)
-        {
-            digitalWrite(LED_PIN_B, LOW);
-        }
-        else
-        {
-            digitalWrite(LED_PIN_B, HIGH);
-        }
-    }
-
 
     if (policy == "LED_ON")
     {
