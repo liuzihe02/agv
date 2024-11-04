@@ -251,7 +251,8 @@ void Actuator::actClaw(String policy)
     }
 }
 
-void Actuator::actLED(String policy)
+void Actuator::
+actLED(String policy)
 {
     if(millis()%(LED_DELAY)==0)
     {

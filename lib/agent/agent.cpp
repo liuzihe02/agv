@@ -50,6 +50,9 @@ void Agent::run()
         int *magneticSensorValues;
         //int *magneticSensorValues = sensor.getMagneticSensorReadings();
 
+        String ledPolicy = policyLED();//magneticSensorValues);
+        actuator.actLED(ledPolicy);
+
         // // Print the sensor values
         // Serial.println("Moving Motor. The Line Sensor Values are:");
         // Serial.print("Front: ");
@@ -63,9 +66,6 @@ void Agent::run()
 
         String motorPolicy = policyMotor(lineSensorBuffer, pathToFactory);
         actuator.actMotor(motorPolicy);
-
-        String ledPolicy = policyLED();//magneticSensorValues);
-        actuator.actLED(ledPolicy);
 
         // String clawPolicy = policyClaw(magneticSensorValues);
         // actuator.actClaw(clawPolicy);
