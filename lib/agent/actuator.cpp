@@ -64,11 +64,6 @@ void Actuator::actMotor(String policy)
         actMotorStraight(policy);
     }
 
-    else if (policy.startsWith("end"))
-    {
-        actMotorEnd(policy);
-    }
-
     else if (policy == "continue")
     {
         return;
@@ -82,13 +77,13 @@ void Actuator::actMotor(String policy)
 
 void Actuator::actMotorStep(String policy)
 {
-    // delay here causes it to turn after it detects the T junctions
+    // right motor is slightly weaker, need to compensate for this
     if (policy == "step_forward")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(205);
         return;
     }
     else if (policy == "step_backward")
@@ -96,7 +91,7 @@ void Actuator::actMotorStep(String policy)
         leftMotor->run(BACKWARD);
         leftMotor->setSpeed(200);
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(205);
         return;
     }
     else if (policy == "step_left")
@@ -136,14 +131,15 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(RELEASE);
         rightMotor->setSpeed(0);
-        delay(1850);
+        delay(1800);
 
         // keep left stationary and turn right only
-        leftMotor->run(RELEASE);
-        leftMotor->setSpeed(0);
+        leftMotor->run(BACKWARD);
+        // remember left is slightly stronger
+        leftMotor->setSpeed(70);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(2100);
+        delay(1600);
         return;
     }
 
@@ -154,57 +150,14 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(0);
         rightMotor->run(RELEASE);
         rightMotor->setSpeed(0);
-        delay(1850);
+        delay(1800);
 
         // keep right stationary and turn left only
-        rightMotor->run(RELEASE);
-        rightMotor->setSpeed(0);
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(90);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1900);
-        return;
-    }
-
-    // if(policy == "turn_left&park")
-    // {
-    //     // just delay to see lag
-    //     leftMotor->run(RELEASE);
-    //     leftMotor->setSpeed(0);
-    //     rightMotor->run(RELEASE);
-    //     rightMotor->setSpeed(0);
-    //     delay(1850);
-
-    //     // keep left stationary and turn right only
-    //     leftMotor->run(RELEASE);
-    //     leftMotor->setSpeed(0);
-    //     rightMotor->run(FORWARD);
-    //     rightMotor->setSpeed(250);
-    //     delay(2200);
-        
-    //     // pause
-    //     leftMotor->run(RELEASE);
-    //     leftMotor->setSpeed(0);
-    //     rightMotor->run(RELEASE);
-    //     rightMotor->setSpeed(0);
-    //     delay(1850);
-
-    //     // move forward a set distance (ideally until ultrasonic but not yet implemented)
-    //     leftMotor->run(FORWARD);
-    //     leftMotor->setSpeed(100);
-    //     rightMotor->run(FORWARD);
-    //     rightMotor->setSpeed(100);
-    //     delay(1000);
-    // }
-}
-
-void Actuator::actMotorEnd(String policy)
-{
-    if (policy == "end_f_turn_left")
-    {
-        actMotorTurn("turn_left");
-        for (int i=0; i<=500; i++){
-                                                                                                                                       
-        }
+        delay(1430);
         return;
     }
 }
@@ -218,7 +171,7 @@ void Actuator::actMotorStraight(String policy)
         leftMotor->setSpeed(100);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(100);
-        delay(1000);
+        delay(500);
         return;
     }
 }
@@ -226,30 +179,32 @@ void Actuator::actMotorStraight(String policy)
 void Actuator::stopMotor()
 {
     leftMotor->run(RELEASE);
+    leftMotor->setSpeed(0);
     rightMotor->run(RELEASE);
+    rightMotor->setSpeed(0);
 }
 
-void Actuator::actClaw(String policy)
-{
-    if (policy == "claw_grab")
-    {
-        for (clawPos = 0; clawPos <= 180; clawPos += 1)
-        { // goes from 0 degrees to 180 degrees
-            // in steps of 1 degree
-            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
-            delay(15);                // waits 15 ms for the servo to reach the position
-        }
-    }
-    else if (policy == "claw_release")
-    {
-        for (clawPos = 180; clawPos <= 0; clawPos -= 1)
-        { // goes from 180 to 0
-            // in steps of 1 degree
-            clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
-            delay(15);                // waits 15 ms for the servo to reach the position
-        }
-    }
-}
+// void Actuator::actClaw(String policy)
+// {
+//     if (policy == "claw_grab")
+//     {
+//         for (clawPos = 0; clawPos <= 180; clawPos += 1)
+//         { // goes from 0 degrees to 180 degrees
+//             // in steps of 1 degree
+//             clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+//             delay(15);                // waits 15 ms for the servo to reach the position
+//         }
+//     }
+//     else if (policy == "claw_release")
+//     {
+//         for (clawPos = 180; clawPos <= 0; clawPos -= 1)
+//         { // goes from 180 to 0
+//             // in steps of 1 degree
+//             clawServo.write(clawPos); // tell servo to go to position in variable 'pos'
+//             delay(15);                // waits 15 ms for the servo to reach the position
+//         }
+//     }
+// }
 
 void Actuator::
 actLED(String policy)

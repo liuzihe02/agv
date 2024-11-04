@@ -23,7 +23,12 @@ void Agent::setup()
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
-    this->pathCounter = 0; // starts program.
+    // starts at the first junction
+    this->junctionCounter = 0;
+    // start the whole program/first path
+    this->pathCounter = 0;
+    // initialize the end counter
+    this->endCounter = 0;
     Serial.println("Agent setup complete");
 }
 
@@ -34,7 +39,13 @@ void Agent::run()
     // isRunning is a private instance variable
     if (!isRunning)
     {
-        Serial.println("Motor has stopped");
+        // reset all the counters
+        //  starts at the first junction
+        this->junctionCounter = 0;
+        // start the whole program/first path
+        this->pathCounter = 0;
+        // initialize the end counter
+        this->endCounter = 0;
         actuator.stopMotor();
         // stop running if the status is false
         return;
@@ -43,36 +54,71 @@ void Agent::run()
     // continue running
     else
     {
-        // Get the updated sensor values as a history/buffer
-        int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
+        // declare the policy first
+        String motorPolicy;
 
-        // Dummy function
-        int *magneticSensorValues;
-        //int *magneticSensorValues = sensor.getMagneticSensorReadings();
+        // check if we are at the start of the loop, read from the junction counter directly
+        if (allPaths[pathCounter][junctionCounter].startsWith("start_backward"))
+        {
 
-        String ledPolicy = policyLED();//magneticSensorValues);
-        actuator.actLED(ledPolicy);
+            // Get the updated sensor values as a history/buffer
+            int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
 
-        // // Print the sensor values
-        // Serial.println("Moving Motor. The Line Sensor Values are:");
-        // Serial.print("Front: ");
-        // Serial.print(lineSensorValues[0]);
-        // Serial.print(", Back: ");
-        // Serial.print(lineSensorValues[1]);
-        // Serial.print(", Left: ");
-        // Serial.print(lineSensorValues[2]);
-        // Serial.print(", Right: ");
-        // Serial.println(lineSensorValues[3]);
+            // get the policy using the current path
+            motorPolicy = policyMotor(lineSensorBuffer, allPaths[pathCounter]);
 
-        String motorPolicy = policyMotor(lineSensorBuffer, pathToFactory);
+            // OVERWRITE everything to make it step backwards, except when it takes a decision (usually turn or straight)
+            if (motorPolicy.startsWith("turn"))
+            {
+                // motorPolicy is fine
+            }
+            // overwrite everything to step backward
+            else
+            {
+                motorPolicy = "step_backward";
+            }
+        }
+
+        // check if current path has ended; reset the junctionCounter and increment the pathCounter
+        else if (allPaths[pathCounter][junctionCounter].startsWith("end"))
+        {
+            // do a regular movement and increment counter for how many end loops we want
+            endCounter += 1;
+
+            if (endCounter == endCounterCounts[pathCounter])
+            {
+                digitalWrite(LED_PIN, HIGH);
+                delay(500);
+
+                // move to the next path
+                junctionCounter = 0;
+                pathCounter += 1;
+                // reset endCounter
+                endCounter = 0;
+            }
+
+            // Get the updated sensor values as a history/buffer
+            int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
+
+            // get the policy using the current path
+            motorPolicy = policyMotor(lineSensorBuffer, allPaths[pathCounter]);
+        }
+
+        // we know we are in the middle
+        else
+        {
+
+            // Get the updated sensor values as a history/buffer
+            int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
+            // int *magneticSensorValues = sensor.getMagneticSensorReadings();
+
+            // get the policy using the current path
+            motorPolicy = policyMotor(lineSensorBuffer, allPaths[pathCounter]);
+        };
+
+        // send the relevant policy to the actuator
         actuator.actMotor(motorPolicy);
-
-        // String clawPolicy = policyClaw(magneticSensorValues);
-        // actuator.actClaw(clawPolicy);
     }
-
-    // // Add a delay to make the output readable
-    // delay(2000);
 }
 
 /**
@@ -95,7 +141,7 @@ void Agent::toggleRunAgent()
             if (isRunning == true)
             {
                 // Resets program path
-                pathCounter = 0;
+                junctionCounter = 0;
             }
             lastDebounceTime = millis();
         }
@@ -173,8 +219,8 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            pathCounter += 1;
-            return path[pathCounter - 1];
+            junctionCounter += 1;
+            return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
         else
@@ -190,8 +236,9 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            pathCounter += 1;
-            return path[pathCounter - 1];
+            junctionCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
         else
@@ -207,13 +254,37 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed as a junction
         if (isBufferConsistent(lineSensorBuffer))
         {
-            pathCounter += 1;
-            return path[pathCounter - 1];
+            junctionCounter += 1;
+            digitalWrite(LED_PIN, HIGH);
+            return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
         else
         {
             return "step_forward";
+        }
+    }
+
+    // inverted T junction, for when its reverting backwards, SHOULD ONLY ENCOUNTER THIS WHEN REVERSING
+    // this SHOULD ONLY HAPPEN WHEN IT IS IN BACKWARD MODE
+    // we are currently at start_backward
+    if (path[junctionCounter] == "start_backward" &&
+        (frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 0)
+    {
+        // readings are consistent, so sudden readings are removed
+        // this is indeed confirmed as a junction
+        if (isBufferConsistent(lineSensorBuffer))
+        {
+            // move junction counter to the next proper junction
+            junctionCounter = 1;
+            digitalWrite(LED_PIN, HIGH);
+            // I cannot return start_backward, return the junction after start_backward
+            return path[1];
+        }
+        // continue previous action and wait for consistent readings
+        else
+        {
+            return "step_backward";
         }
     }
 
@@ -261,28 +332,29 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         return "step_right";
     }
 
-    else if (backLine == 1)
-    {
-        //  continue doing what it was before
-        return "continue";
-    }
+    // else if (backLine == 1)
+    // {
+    //     digitalWrite(LED_PIN, LOW);
+    //     //  continue doing what it was before
+    //     return "continue";
+    // }
 
     //  If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-// String Agent::policyClaw(int *magneticSensorValues)
-// {
-//     // check for the FIRST magnetic sensor values only
-//     if (magneticSensorValues[0] == 0)
-//     {
-//         return "claw_grab";
-//     }
-//     else if (magneticSensorValues[0] == 1)
-//     {
-//         return "claw_release";
-//     }
-// }
+String Agent::policyClaw(int *magneticSensorValues)
+{
+    // check for the FIRST magnetic sensor values only
+    if (magneticSensorValues[0] == 0)
+    {
+        return "claw_grab";
+    }
+    else if (magneticSensorValues[0] == 1)
+    {
+        return "claw_release";
+    }
+}
 
 String Agent::policyLED()//int *magneticSensorValues)
 {
@@ -296,4 +368,38 @@ String Agent::policyLED()//int *magneticSensorValues)
     //     return "LED_on";
     // }
     return "hello";
+}
+
+String Agent::invertPolicyMotor(String policy)
+{
+    if (policy == "step_forward")
+    {
+        return "step_backward";
+    }
+
+    if (policy == "step_left")
+    {
+        return "step_right";
+    }
+    if (policy == "step_right")
+    {
+        return "step_left";
+    }
+}
+
+String Agent::invertPolicyMotor(String policy)
+{
+    if (policy == "step_forward")
+    {
+        return "step_backward";
+    }
+
+    if (policy == "step_left")
+    {
+        return "step_right";
+    }
+    if (policy == "step_right")
+    {
+        return "step_left";
+    }
 }

@@ -19,6 +19,10 @@
  * Given the environment, sensors collect the relevant state variables from the environment
  * Policies takes in these state variables, and chooses an appropriate action
  * Actuators then executes these actions in the real world
+ *
+ * Note:
+ * We define the junction as a decision, where it acts on a value from allPaths (list of junctions)
+ *
  */
 
 // receives environment data
@@ -47,6 +51,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 };
 
 // How many time steps to store previous line sensor values
+// around 20 works
 const int LINE_SENSOR_BUFFER_SIZE = 20;
 
 // placement for where the magnetic sensor pins go
@@ -123,6 +128,9 @@ public:
     // this wrapper function basically calls the actual actMotor functions to move the thing
     // just directs which one to call
     void actMotor(String policy);
+
+    // stops the Motor indefinitely
+    // this is not an action, we call this using toggle!
     void stopMotor();
 
     // toggles the LED
@@ -145,9 +153,12 @@ private:
     void actMotorStep(String policy);
     // try to get it to make a complete turn
     void actMotorTurn(String policy);
-    // Straight forward or back with delay
+    // Straight  decision - forward or back with a timed delay
     void actMotorStraight(String policy);
-    // ending procedures
+
+    // hard coded starting conditions for a single path
+    void actMotorStart(String policy);
+    // hard coded ending conditions for a single path
     void actMotorEnd(String policy);
 };
 
@@ -163,47 +174,68 @@ public:
 private:
     Sensor sensor;
     Actuator actuator;
-    
-    static const int NUM_OF_PATHS = 11;
-    static const int MAX_NUM_JUNCTIONS = 20;
 
-    // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
-    String paths[NUM_OF_PATHS][MAX_NUM_JUNCTIONS] = 
-    {  
-        {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
+    // these are class variables
 
-        {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
-        {"start_backward", "turn_180_clockwise", "straight_forward", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // Disposal back to factory
+    // these are stuff related to the overall coordination of paths
+    static const int NUM_ROWS = 2;  // Number of paths
+    static const int NUM_COLS = 20; // Max number of junctions per path
+                                    // all the paths stored as a 2D matrix
 
-        {"start_backward", "turn_right", "turn_right", "straight_forward","turn_right", "place_box"}, //Factory to B1
-        {"start_backward", "turn_right", "straight_forward", "turn_left", "end_f_turn_right"}, //B1 to Factory
+    // these store all the junction decisions
+    String allPaths[NUM_ROWS][NUM_COLS] =
+        {
+            // path zero and ending at the factory
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},                          // Start to factory
+                                                                                                                     // path contaminated and ending at contaminated area
+            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"}, // Factory to disposal area
+        
+            // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
 
-        {"start_backward", "turn_right", "turn_left", "turn_left", "place_box"}, // Factory to B2;
-        {"start_backward", "turn_left", "turn_right", "end_f_turn_right"}, // B2 to factory
+            // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
+            // {"start_backward", "turn_180_clockwise", "straight_forward", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // Disposal back to factory
 
-        {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward","turn_right", "place_box"}, // Factory to B3
-        {"start_backward", "turn_right", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // B3 to Factory
+            // {"start_backward", "turn_right", "turn_right", "straight_forward","turn_right", "place_box"}, //Factory to B1
+            // {"start_backward", "turn_right", "straight_forward", "turn_left", "end_f_turn_right"}, //B1 to Factory
 
-        {"start_backward", "turn_right", "turn_left", "straight_forward", "turn_left", "place_box"}, // Factory to B4
-        {"start_backward", "turn_left", "straight_forward", "turn_right", "end_f_turn_right"}, // B4 to Factory
+            // {"start_backward", "turn_right", "turn_left", "turn_left", "place_box"}, // Factory to B2;
+            // {"start_backward", "turn_left", "turn_right", "end_f_turn_right"}, // B2 to factory
+
+            // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward","turn_right", "place_box"}, // Factory to B3
+            // {"start_backward", "turn_right", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // B3 to Factory
+
+            // {"start_backward", "turn_right", "turn_left", "straight_forward", "turn_left", "place_box"}, // Factory to B4
+            // {"start_backward", "turn_left", "straight_forward", "turn_right", "end_f_turn_right"}, // B4 to Factory
     };
+    
 
-    // Experimental path to the factory requires 5 junctions. This path should eventually be dynamic and able
-    String pathToFactory[5] = {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left&park"};
+    // each of this number represents how many loops to go forward for
+    int const endCounterCounts[2] = {300, 300}; // Size determined manually
 
-    // Counts up which junction we are on in the path, incremented whenever a junction is detected.
+    // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
+    int junctionCounter;
+
+    // selects which path out of 10 we are on
     int pathCounter;
+
+    // count how many loops to do the ending condition
+    int endCounter;
+
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();
     // the policy takes all information from line sensors, chooses an action, and sends action chosen to the motor actuator
     // this information is currently a 2D matrix of the previous x number of line sensor values
-    // also takes in a specific path to follow
+
+    // also takes in a specific path of policies to follow
+    // returns a struct (tuple) of (String,boolean)
     String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    // String policyClaw(int *lineSensorValues);
-
+    String policyClaw(int *lineSensorValues);
     // policy to decide how LED lights up
-    String policyLED();//int *magneticSensorValues);
+    String policyLED(int *magneticSensorValues);
+
+    // given a policy, invert it to go backwards properly
+    String invertPolicyMotor(String policy);
 
     // these are to handle push button activation
     bool isRunning;
