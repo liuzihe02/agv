@@ -41,3 +41,5 @@ Since we're not using the Arduino IDE, we'll have to import libraries ourselves 
   - Use a buffer to make readings consistent before making a decision
 - Added a double check whenever we encounter `|-` or `-|` junctions, make sure its not a cross
 - Be careful about using `delay`! Delay makes it continue the previous action for some time, NOT stop the robot
+- Make sure when you upload code or press the reset button, to disconnect the servo AND the motor
+  - Otherwise the servo will do a 270deg turn
