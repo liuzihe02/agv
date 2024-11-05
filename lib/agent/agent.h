@@ -52,7 +52,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 
 // How many time steps to store previous line sensor values
 // around 20 works
-const int LINE_SENSOR_BUFFER_SIZE = 15;
+const int LINE_SENSOR_BUFFER_SIZE = 8;
 
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
