@@ -168,11 +168,6 @@ void Agent::toggleRunAgent()
             Serial.println("TOGGLE ACTIVATED");
             // toggle the state of isRunning
             isRunning = !isRunning;
-            if (isRunning == true)
-            {
-                // Resets program path
-                junctionCounter = 0;
-            }
             lastDebounceTime = millis();
         }
     }
