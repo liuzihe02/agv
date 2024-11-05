@@ -64,7 +64,7 @@ void Agent::run()
         // THESE SHOULD BE GOING BACKWARDS
         if (allPaths[pathCounter][junctionCounter].startsWith("start_backward"))
         {
-            Serial.println("Start detected");
+            // Serial.println("Start detected");
             // Get the updated sensor values as a history/buffer
             int(*lineSensorBuffer)[NUM_LINE_SENSORS] = sensor.updateLineSensorBuffer();
 
@@ -86,8 +86,9 @@ void Agent::run()
         // check if current path has ended; reset the junctionCounter and increment the pathCounter
         else if (allPaths[pathCounter][junctionCounter].startsWith("end"))
         {
-            Serial.println("End detected");
-            Serial.print(endCounter);
+            // Serial.println("End detected");
+            // Serial.print(endCounter);
+
             // do a regular movement and increment counter for how many end loops we want
             // we want to increase the endCounter instead of having a timed delay because
             // we still want line following
@@ -130,7 +131,7 @@ void Agent::run()
             }
         };
 
-        Serial.println(motorPolicy);
+        // Serial.println(motorPolicy);
 
         // move the motor after moving the claw
         // send the relevant policy to the actuator
@@ -142,11 +143,11 @@ void Agent::run()
         if (endCounter == endCounterCounts[pathCounter])
         {
             this->actuator.stopMotor();
-            delay(5000);
+            // no delay
             String clawPolicy = policyClaw(allPaths[pathCounter]);
-            Serial.println(clawPolicy);
+            // Serial.println(clawPolicy);
             actuator.actClaw(clawPolicy);
-            Serial.println("Finished acting claw");
+            // Serial.println("Finished acting claw");
         }
     }
 }

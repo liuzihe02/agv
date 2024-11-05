@@ -52,7 +52,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 
 // How many time steps to store previous line sensor values
 // around 20 works
-const int LINE_SENSOR_BUFFER_SIZE = 5;
+const int LINE_SENSOR_BUFFER_SIZE = 13;
 
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
@@ -69,7 +69,7 @@ const int CLAW_PIN = 13;
 
 // default claw opening and closing positions, note that close may not be zero
 const int CLAW_OPEN_POS = 180;
-const int CLAW_CLOSE_POS = 160;
+const int CLAW_CLOSE_POS = 152;
 
 // LED pin
 const int LED_PIN = 4;
@@ -216,7 +216,7 @@ private:
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {50, 100}; // Size determined manually
+    int const endCounterCounts[2] = {2000, 2000}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;

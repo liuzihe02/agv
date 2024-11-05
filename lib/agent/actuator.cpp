@@ -159,14 +159,21 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(60);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1725);
+        delay(1670);
 
-        // // go forward by a little bit, ignore blue crosses
-        // leftMotor->run(FORWARD);
-        // leftMotor->setSpeed(200);
-        // rightMotor->run(FORWARD);
-        // rightMotor->setSpeed(200);
-        // delay(200);
+        // delay again
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1800);
+
+        // go forward by a little bit, ignore blue crosses
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(200);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(200);
+        delay(200);
         return;
     }
 
@@ -187,12 +194,19 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(250);
         delay(1645);
 
-        // // go forward by a little bit, ignore blue crosses
-        // leftMotor->run(FORWARD);
-        // leftMotor->setSpeed(200);
-        // rightMotor->run(FORWARD);
-        // rightMotor->setSpeed(200);
-        // delay(200);
+        // delay again
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1800);
+
+        // go forward by a little bit, ignore blue crosses
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(200);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(200);
+        delay(200);
         return;
     }
 }
