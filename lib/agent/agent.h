@@ -52,7 +52,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 
 // How many time steps to store previous line sensor values
 // around 20 works
-const int LINE_SENSOR_BUFFER_SIZE = 8;
+const int LINE_SENSOR_BUFFER_SIZE = 5;
 
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
@@ -68,8 +68,8 @@ const int RIGHT_MOTOR_PIN = 3;
 const int CLAW_PIN = 13;
 
 // default claw opening and closing positions, note that close may not be zero
-const int CLAW_CLOSE_POS = 155;
 const int CLAW_OPEN_POS = 180;
+const int CLAW_CLOSE_POS = 160;
 
 // LED pin
 const int LED_PIN = 4;

@@ -297,7 +297,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // this SHOULD ONLY HAPPEN WHEN IT IS IN BACKWARD MODE
     // we are currently at start_backward
     if (path[junctionCounter] == "start_backward" &&
-        (frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 0)
+        leftLine == 1 && rightLine == 1)
     {
         // readings are consistent, so sudden readings are removed
         // this is indeed confirmed as a junction
