@@ -139,14 +139,15 @@ public:
     // toggles the LED
     void actLED(String policy);
 
+    // claw motor object
+    Servo clawServo;
+
 private:
     // this object controls both left and right motors for movement
     Adafruit_MotorShield AFMS;
     Adafruit_DCMotor *leftMotor;
     Adafruit_DCMotor *rightMotor;
 
-    // claw motor object
-    Servo clawServo;
     // store position for servo
     int clawPos;
 

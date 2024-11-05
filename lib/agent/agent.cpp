@@ -49,6 +49,7 @@ void Agent::run()
         // reset the end counter
         this->endCounter = 0;
         actuator.stopMotor();
+        this->actuator.clawServo.write(CLAW_OPEN_POS);
         // stop running if the status is false
         return;
     }
