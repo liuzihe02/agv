@@ -191,11 +191,11 @@ private:
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            //{"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
-            //{"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
-            {"turn_right", "end_0_f"},                   // Start to factory
-                                                         // path contaminated and ending at contaminated area
-            {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
+            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
+            // {"turn_right", "end_0_f"},                   // Start to factory
+            //                                              // path contaminated and ending at contaminated area
+            // {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
 
             // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
 
