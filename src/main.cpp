@@ -33,8 +33,8 @@ void loop()
 // // twelve servo objects can be created on most boards
 // int pos; // variable to store the servo position
 
-// int claw_open = 20;
-// int claw_close = 0;
+// int claw_open = 180;
+// int claw_close = 155;
 
 // void setup()
 // {

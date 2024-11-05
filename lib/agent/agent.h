@@ -68,8 +68,8 @@ const int RIGHT_MOTOR_PIN = 3;
 const int CLAW_PIN = 13;
 
 // default claw opening and closing positions, note that close may not be zero
-const int CLAW_CLOSE_POS = 0;
-const int CLAW_OPEN_POS = 20;
+const int CLAW_CLOSE_POS = 155;
+const int CLAW_OPEN_POS = 180;
 
 // LED pin
 const int LED_PIN = 4;
