@@ -356,27 +356,31 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     }
 
     // forward line following - shift left
-    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 1)
+    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
     {
-        return "step_forward_left";
+        return "step_forward_clockwise";
     }
 
-    // forward line following - shift right
-    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0 && backLine == 1)
+    // forward line following - shift right or anticlockwise
+    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
     {
-        return "step_forward_right";
+        return "step_forward_anticlockwise";
     }
 
-    // backward line following - shift left
-    if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 0)
+    // backward line following
+    if (path[junctionCounter] == "start_backward")
     {
-        return "step_backward_left";
-    }
+        // backward line following - shift left
+        if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
+        {
+            return "step_backward_anticlockwise";
+        }
 
-    // backward line following - shift right
-    if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0 && backLine == 0)
-    {
-        return "step_backward_right";
+        // backward line following - shift right
+        if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
+        {
+            return "step_backward_clockwise";
+        }
     }
 
     // else if (backLine == 1)
