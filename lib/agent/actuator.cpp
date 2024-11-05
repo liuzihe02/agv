@@ -87,7 +87,7 @@ void Actuator::actMotorStep(String policy)
         rightMotor->setSpeed(206);
         return;
     }
-    else if (policy == "step_left")
+    else if (policy == "step_forward_left")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(100);
@@ -98,12 +98,37 @@ void Actuator::actMotorStep(String policy)
         rightMotor->setSpeed(200);
         return;
     }
-    else if (policy == "step_right")
+    else if (policy == "step_forward_right")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(200);
 
         rightMotor->run(FORWARD);
+        rightMotor->setSpeed(100);
+        // rightMotor->run(RELEASE);
+        // rightMotor->setSpeed(0);
+        return;
+    }
+
+    else if (policy == "step_backward_left")
+    {
+        // need to make it go clockwise
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(100);
+        // leftMotor->run(RELEASE);
+        // leftMotor->setSpeed(0);
+
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(200);
+        return;
+    }
+    else if (policy == "step_backward_right")
+    {
+        // need to make it go anti clockwise
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(200);
+
+        rightMotor->run(BACKWARD);
         rightMotor->setSpeed(100);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
