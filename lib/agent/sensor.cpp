@@ -35,7 +35,7 @@ void Sensor::setup()
     //     pinMode(MAGNETIC_SENSOR_PINS[i], INPUT);
     // }
     pinMode(MAGNETIC_SENSOR_PINS, INPUT);
-    
+
     // setup for LEDs
     pinMode(LED_PIN_B, OUTPUT);
     pinMode(LED_PIN_G, OUTPUT);
@@ -69,8 +69,8 @@ int (*Sensor::updateLineSensorBuffer())[NUM_LINE_SENSORS]
 int Sensor::updateMagneticSensorReadings()
 {
     // initialize this here
-    magneticSensorValues = digitalRead(MAGNETIC_SENSOR_PINS);
+    magneticSensorValue = digitalRead(MAGNETIC_SENSOR_PINS);
 
     // return a reference to the stored array
-    return magneticSensorValues;
+    return magneticSensorValue;
 }

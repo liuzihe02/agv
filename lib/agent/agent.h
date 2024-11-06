@@ -113,8 +113,8 @@ private:
     // we need a buffer because usually whenb we make decisions, we need to refer to the last x number of values to double check
     int lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE][NUM_LINE_SENSORS];
 
-    // a 1D ARRAY of magnetic sensor values
-    int magneticSensorValues; //[NUM_MAGNETIC_SENSORS];
+    // a single integer of magnetic sensor value
+    int magneticSensorValue;
 };
 
 class Actuator
@@ -218,13 +218,16 @@ private:
     int junctionCounter;
 
     // selects which path out of 10 we are on
+    // this is basically an index into the allPaths matrix, selects which row we are on
     int pathCounter;
+    // number of packages delivered, used to track which path we go to, used to set pathCounter
+    int deliverCounter;
 
     // count how many loops to do the ending condition
     // this should be 0 when its not in an end chunk, and non zero when its counting end
     int endCounter;
 
-    // Global
+    // Global program counter, increments every loop. never stops or is modified once program stops
     int loopCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state

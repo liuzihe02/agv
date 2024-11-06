@@ -29,6 +29,8 @@ void Agent::setup()
     this->junctionCounter = 0;
     // start the whole program/first path
     this->pathCounter = 0;
+    // reset the number of packages;
+    this->deliverCounter = 0;
     // initialize the end counter
     this->endCounter = 0;
     Serial.println("Agent setup complete");
@@ -46,6 +48,8 @@ void Agent::run()
         this->junctionCounter = 0;
         // start the whole program/first path
         this->pathCounter = 0;
+        // reset the number of packages delivered
+        this->deliverCounter = 0;
         // reset the end counter
         this->endCounter = 0;
         // global clock
@@ -62,6 +66,10 @@ void Agent::run()
     {
         // declare the policy first
         String motorPolicy;
+        // get the magnetic sensor value here
+        // this is a copy of the real private integer
+        // get this at the start
+        int magValue = sensor.updateMagneticSensorReadings();
 
         // check if we are at the start of the loop, read from the junction counter directly
         // THESE SHOULD BE GOING BACKWARDS
@@ -101,9 +109,34 @@ void Agent::run()
             if (endCounter == endCounterCounts[pathCounter] + 1)
             {
                 // digitalWrite(LED_PIN, HIGH);
-                //  move to the next path
+                // THIS BIT IS COMPLICATED
+
+                // check if this path is ending at factory, if so need to decide what to do
+                if (allPaths[pathCounter][junctionCounter].endsWith("f"))
+                {
+                    // if currently contaminated, go to contaminated area
+                    if (magValue == 1)
+                    {
+                        // this next path is from factory to contaminated
+                        pathCounter = 1;
+                    }
+                    else
+                    {
+                        // not contaminated, deliver next parcel
+                        // check the number of delivered parcels so far and decide
+                        pathCounter = 3 + deliverCounter * 2;
+                    }
+                }
+                // we are not ending at the factory
+                // in other words we have delivered a parcel successfully!
+                else
+                {
+                    deliverCounter += 1;
+                    // simply move on to the next path, should be accounted for in allPaths
+                    pathCounter += 1;
+                }
+                //  always need to reset junctions after moving to next path
                 junctionCounter = 0;
-                pathCounter += 1;
                 // reset endCounter
                 endCounter = 0;
             }
@@ -158,12 +191,13 @@ void Agent::run()
         {
             this->actuator.stopMotor();
             // no delay
-            String clawPolicy = policyClaw(allPaths[pathCounter], sensor.updateMagneticSensorReadings());
+            String clawPolicy = policyClaw(allPaths[pathCounter], magValue);
             // Serial.println(clawPolicy);
             digitalWrite(LED_PIN_B, LOW);
             actuator.actClaw(clawPolicy);
             // Serial.println("Finished acting claw");
         }
+        // increment the global program counter
         loopCounter += 1;
     }
 }
