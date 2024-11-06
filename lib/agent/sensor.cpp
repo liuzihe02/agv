@@ -29,11 +29,17 @@ void Sensor::setup()
     }
 
     // setup magnetic sensors
-    for (int i = 0; i < NUM_MAGNETIC_SENSORS; i++)
-    {
-        // set it to the relevant pin modes
-        pinMode(MAGNETIC_SENSOR_PINS[i], INPUT);
-    }
+    // for (int i = 0; i < NUM_MAGNETIC_SENSORS; i++)
+    // {
+    //     // set it to the relevant pin modes
+    //     pinMode(MAGNETIC_SENSOR_PINS[i], INPUT);
+    // }
+    pinMode(MAGNETIC_SENSOR_PINS, INPUT);
+    
+    // setup for LEDs
+    pinMode(LED_PIN_B, OUTPUT);
+    pinMode(LED_PIN_G, OUTPUT);
+    pinMode(LED_PIN_R, OUTPUT);
 
     Serial.println("Sensor setup complete");
 }
@@ -60,14 +66,11 @@ int (*Sensor::updateLineSensorBuffer())[NUM_LINE_SENSORS]
 }
 
 // update the array and return a reference to array
-int *Sensor::updateMagneticSensorReadings()
+int Sensor::updateMagneticSensorReadings()
 {
     // initialize this here
-    for (int i = 0; i < NUM_MAGNETIC_SENSORS; i++)
-    {
-        // these values are indeed 0 or 1, when you do value==HIGH, c++ does something backend
-        magneticSensorValues[i] = digitalRead(MAGNETIC_SENSOR_PINS[i]);
-    }
+    magneticSensorValues = digitalRead(MAGNETIC_SENSOR_PINS);
+
     // return a reference to the stored array
     return magneticSensorValues;
 }

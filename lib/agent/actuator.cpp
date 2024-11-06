@@ -211,9 +211,21 @@ void Actuator::actClaw(String policy)
 
 void Actuator::actLED(String policy)
 {
-    if (millis() % LED_DELAY == 0)
+    // if (millis() % LED_DELAY == 0)
+    // {
+    //     digitalWrite(LED_PIN_B, HIGH);
+    // }
+
+    if (policy == "LED_ON")
     {
-        digitalWrite(LED_PIN_B, HIGH);
+        digitalWrite(LED_PIN_R, HIGH);
+        digitalWrite(LED_PIN_G, LOW);
     }
+    else if (policy == "LED_OFF")
+    {
+        digitalWrite(LED_PIN_R, LOW);
+        digitalWrite(LED_PIN_G, HIGH);
+    }
+    
     // not implemented yet
 }

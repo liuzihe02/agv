@@ -39,7 +39,7 @@ class Agent;
 const int NUM_LINE_SENSORS = 5;
 
 // total number of magnetic sensors
-const int NUM_MAGNETIC_SENSORS = 2;
+// const int NUM_MAGNETIC_SENSORS = 2;
 
 // Pin assignments for sensors
 const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
@@ -55,11 +55,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 const int LINE_SENSOR_BUFFER_SIZE = 15;
 
 // placement for where the magnetic sensor pins go
-const int MAGNETIC_SENSOR_PINS[NUM_MAGNETIC_SENSORS] = {
-    6,
-    7,
-};
-
+const int MAGNETIC_SENSOR_PINS = 6; // or 7
 // motor pins
 const int LEFT_MOTOR_PIN = 2;
 const int RIGHT_MOTOR_PIN = 3;
@@ -72,8 +68,9 @@ const int CLAW_CLOSE_POS = 155;
 const int CLAW_OPEN_POS = 180;
 
 // LED pin
-const int LED_PIN = 4;
-const int LED_PIN_B = 1;
+const int LED_PIN_B = 4;
+const int LED_PIN_R = 3;
+const int LED_PIN_G = 1;
 
 // push button pin
 const int PUSH_BUTTON_PIN = 5;
@@ -101,7 +98,7 @@ public:
     //  we keep a history of the past few
     int (*updateLineSensorBuffer())[NUM_LINE_SENSORS];
     // update the magnetic sensor readings and return the array, need to store this array unfortunately
-    int *updateMagneticSensorReadings();
+    int updateMagneticSensorReadings();
 
 private:
     // The buffer of all line sensors values as a 2D MATRIX
@@ -117,7 +114,7 @@ private:
     int lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE][NUM_LINE_SENSORS];
 
     // a 1D ARRAY of magnetic sensor values
-    int magneticSensorValues[NUM_MAGNETIC_SENSORS];
+    int magneticSensorValues;//[NUM_MAGNETIC_SENSORS];
 };
 
 class Actuator
@@ -236,7 +233,7 @@ private:
     // returns a struct (tuple) of (String,boolean)
     String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    String policyClaw(String *path);
+    String policyClaw(String *path, int *magneticSensorValues);
     // policy to decide how LED lights up
     String policyLED(int *magneticSensorValues);
 

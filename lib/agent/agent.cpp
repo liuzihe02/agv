@@ -20,8 +20,8 @@ void Agent::setup()
     actuator.setup();
 
     // LED setup
-    pinMode(LED_PIN, OUTPUT);
-    pinMode(LED_PIN_B, OUTPUT);
+    // pinMode(LED_PIN, OUTPUT);
+    // pinMode(LED_PIN_B, OUTPUT);
 
     this->isRunning = false;
     this->lastDebounceTime = 0;
@@ -95,7 +95,7 @@ void Agent::run()
             // move on to the next path here, right after the encCounter
             if (endCounter == endCounterCounts[pathCounter] + 1)
             {
-                digitalWrite(LED_PIN, HIGH);
+                //digitalWrite(LED_PIN, HIGH);
                 // move to the next path
                 junctionCounter = 0;
                 pathCounter += 1;
@@ -135,9 +135,10 @@ void Agent::run()
         {
             this->actuator.stopMotor();
             delay(5000);
-            String clawPolicy = policyClaw(allPaths[pathCounter]);
+            String clawPolicy = policyClaw(allPaths[pathCounter], sensor.updateMagneticSensorReadings());
             Serial.println(clawPolicy);
             actuator.actClaw(clawPolicy);
+            // actuator.actLED(policyLED(sensor.updateMagneticSensorReadings()));
             Serial.println("Finished acting claw");
         }
     }
@@ -223,7 +224,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // Check if it's on a straight line
     if (frontRightLine == 1 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
+        // digitalWrite(LED_PIN, LOW);
         return "step_forward";
     }
 
@@ -232,7 +233,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // this is causing a TON of problems, thinking the blue square is a real junction
     if ((frontRightLine == 1 || frontLeftLine == 1) && leftLine == 1 && rightLine == 1 && backLine == 1)
     {
-        digitalWrite(LED_PIN, LOW);
+        // digitalWrite(LED_PIN, LOW);
         return "step_forward";
     }
 
@@ -244,7 +245,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             junctionCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
+            // digitalWrite(LED_PIN, HIGH);
             return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -262,7 +263,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             junctionCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
+            // digitalWrite(LED_PIN, HIGH);
             return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -280,7 +281,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             junctionCounter += 1;
-            digitalWrite(LED_PIN, HIGH);
+            // digitalWrite(LED_PIN, HIGH);
             return path[junctionCounter - 1];
         }
         // continue previous action and wait for consistent readings
@@ -302,7 +303,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         {
             // move junction counter to the next proper junction
             junctionCounter = 1;
-            digitalWrite(LED_PIN, HIGH);
+            // digitalWrite(LED_PIN, HIGH);
             // I cannot return start_backward, return the junction after start_backward
             return path[1];
         }
@@ -320,7 +321,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed
         if (isBufferConsistent(lineSensorBuffer))
         {
-            digitalWrite(LED_PIN, LOW);
+            // digitalWrite(LED_PIN, LOW);
             return "turn_right";
         }
         // continue previous action and wait for consistent readings
@@ -337,7 +338,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         // this is indeed confirmed
         if (isBufferConsistent(lineSensorBuffer))
         {
-            digitalWrite(LED_PIN, LOW);
+            // digitalWrite(LED_PIN, LOW);
             return "turn_left";
         }
         // continue previous action and wait for consistent readings
@@ -350,14 +351,14 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     // line following - shift left
     if (frontRightLine == 0 && frontLeftLine == 1 && leftLine == 0 && rightLine == 0)
     {
-        digitalWrite(LED_PIN, LOW);
+        // digitalWrite(LED_PIN, LOW);
         return "step_left";
     }
 
     // line following - shift right
     if (frontRightLine == 1 && frontLeftLine == 0 && leftLine == 0 && rightLine == 0)
     {
-        digitalWrite(LED_PIN, LOW);
+        // digitalWrite(LED_PIN, LOW);
         return "step_right";
     }
 
@@ -368,37 +369,43 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     //     return "continue";
     // }
 
-    digitalWrite(LED_PIN, LOW);
+    // digitalWrite(LED_PIN, LOW);
     //  If none of the above conditions are met, implement error correction
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-String Agent::policyClaw(String *path)
+String Agent::policyClaw(String *path, int *magneticSensorValues)
 {
     // make sure we are actually at the end
     assert(endCounter > 0);
     // check whether to release or grab
     if (path[junctionCounter] == "end_0_f")
-    {
+    {   
+        if (magneticSensorValues[0] == 0)
+        {
+            digitalWrite(LED_PIN_R, HIGH);
+            digitalWrite(LED_PIN_G, LOW);
+            //return "LED_off";
+        }
+        else if (magneticSensorValues[0] == 1)
+        {
+            digitalWrite(LED_PIN_R, HIGH);
+            digitalWrite(LED_PIN_G, LOW);
+            //return "LED_on";
+        }
         return "claw_grab";
     }
     else if (path[junctionCounter] == "end_c_c")
-    {
+    {   
+        digitalWrite(LED_PIN_R, LOW);
+        digitalWrite(LED_PIN_G, LOW);
         return "claw_release";
     }
 }
 
 String Agent::policyLED(int *magneticSensorValues)
 {
-    // check for the FIRST magnetic sensor values only
-    if (magneticSensorValues[0] == 0)
-    {
-        return "LED_off";
-    }
-    else if (magneticSensorValues[0] == 1)
-    {
-        return "LED_on";
-    }
+    return "hello";// check for the FIRST magnetic sensor values only
 }
 
 // String Agent::invertPolicyMotor(String policy)
