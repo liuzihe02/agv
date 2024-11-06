@@ -87,7 +87,7 @@ void Actuator::actMotorStep(String policy)
         rightMotor->setSpeed(206);
         return;
     }
-    else if (policy == "step_left")
+    else if (policy == "step_forward_clockwise")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(100);
@@ -98,12 +98,37 @@ void Actuator::actMotorStep(String policy)
         rightMotor->setSpeed(200);
         return;
     }
-    else if (policy == "step_right")
+    else if (policy == "step_forward_anticlockwise")
     {
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(200);
 
         rightMotor->run(FORWARD);
+        rightMotor->setSpeed(100);
+        // rightMotor->run(RELEASE);
+        // rightMotor->setSpeed(0);
+        return;
+    }
+
+    else if (policy == "step_backward_clockwise")
+    {
+        // need to make it go clockwise
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(100);
+        // leftMotor->run(RELEASE);
+        // leftMotor->setSpeed(0);
+
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(200);
+        return;
+    }
+    else if (policy == "step_backward_anticlockwise")
+    {
+        // need to make it go anti clockwise
+        leftMotor->run(BACKWARD);
+        leftMotor->setSpeed(200);
+
+        rightMotor->run(BACKWARD);
         rightMotor->setSpeed(100);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
@@ -128,12 +153,27 @@ void Actuator::actMotorTurn(String policy)
 
         // keep left stationary and turn right
         // TODO: NEED to recalibrate this!
+        // might have some issues as not perfect
         leftMotor->run(BACKWARD);
         // remember left is slightly stronger
-        leftMotor->setSpeed(55);
+        leftMotor->setSpeed(60);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1700);
+        delay(1670);
+
+        // delay again
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1800);
+
+        // go forward by a little bit, ignore blue crosses
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(200);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(200);
+        delay(200);
         return;
     }
 
@@ -149,10 +189,24 @@ void Actuator::actMotorTurn(String policy)
         // TODO: ALWAYS need to recalibrate this
         //  keep right stationary and turn left only
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(65);
+        rightMotor->setSpeed(70);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1620);
+        delay(1645);
+
+        // delay again
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1800);
+
+        // go forward by a little bit, ignore blue crosses
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(200);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(200);
+        delay(200);
         return;
     }
 }

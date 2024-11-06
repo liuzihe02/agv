@@ -43,7 +43,7 @@ const int NUM_LINE_SENSORS = 5;
 
 // Pin assignments for sensors
 const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
-    8,  // 0: FRONTLEFT
+    7,  // 0: FRONTLEFT
     9,  // 1: BACK
     10, // 2: LEFT
     11, // 3: RIGHT
@@ -52,7 +52,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 
 // How many time steps to store previous line sensor values
 // around 20 works
-const int LINE_SENSOR_BUFFER_SIZE = 15;
+const int LINE_SENSOR_BUFFER_SIZE = 13;
 
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS = 6; // or 7
@@ -64,8 +64,8 @@ const int RIGHT_MOTOR_PIN = 3;
 const int CLAW_PIN = 13;
 
 // default claw opening and closing positions, note that close may not be zero
-const int CLAW_CLOSE_POS = 155;
 const int CLAW_OPEN_POS = 180;
+const int CLAW_CLOSE_POS = 152;
 
 // LED pin
 const int LED_PIN_B = 4;
@@ -136,14 +136,15 @@ public:
     // toggles the LED
     void actLED(String policy);
 
+    // claw motor object
+    Servo clawServo;
+
 private:
     // this object controls both left and right motors for movement
     Adafruit_MotorShield AFMS;
     Adafruit_DCMotor *leftMotor;
     Adafruit_DCMotor *rightMotor;
 
-    // claw motor object
-    Servo clawServo;
     // store position for servo
     int clawPos;
 
@@ -187,11 +188,11 @@ private:
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            //{"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
-            //{"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
-            {"turn_right", "end_0_f"},                   // Start to factory
-                                                         // path contaminated and ending at contaminated area
-            {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
+            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
+            // {"turn_right", "end_0_f"},                   // Start to factory
+            //                                              // path contaminated and ending at contaminated area
+            // {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
 
             // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
 
@@ -212,7 +213,7 @@ private:
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {50, 100}; // Size determined manually
+    int const endCounterCounts[2] = {2000, 2000}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;

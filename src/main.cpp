@@ -41,6 +41,7 @@ void loop()
 //   Serial.begin(9600);
 //   myservo.attach(13); // attaches the servo on pin 13 to the servo object
 //   assert(claw_close < claw_open);
+//   myservo.write(claw_open);
 // }
 
 // void loop()
