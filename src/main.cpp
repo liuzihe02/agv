@@ -31,38 +31,28 @@ void loop()
 
 // Servo myservo; // create servo object to control a servo
 // // twelve servo objects can be created on most boards
-// int pos; // variable to store the servo position
+// // int pos; // variable to store the servo position
 
-// int claw_open = 180;
-// int claw_close = 155;
+// // int claw_open = 180;
+// // int claw_close = 155;
 
 // void setup()
 // {
 //   Serial.begin(9600);
-//   myservo.attach(13); // attaches the servo on pin 13 to the servo object
-//   assert(claw_close < claw_open);
-//   myservo.write(claw_open);
+//   pinMode(LED_PIN_G, OUTPUT);
 // }
 
 // void loop()
 // {
-//   pos = claw_open;
-//   Serial.println("START");
-//   Serial.print(pos);
-
-//   while (pos > claw_close)
-//   { // goes from 0 degrees to 180 degrees
-//     // in steps of 1 degree
-//     pos -= 1;
-//     Serial.println(pos);
-//     myservo.write(pos); // tell servo to go to position in variable 'pos'
-//     delay(200);         // waits 15 ms for the servo to reach the position
+//   if (millis() % 500 == 0 )
+//   {
+//     if (millis() % 1000 == 0)
+//     {
+//       digitalWrite(LED_PIN_G, LOW);
+//     }
+//     else
+//     {
+//       digitalWrite(LED_PIN_G, HIGH);
+//     }
 //   }
-//   // delay when closed
-//   delay(2000);
-//   // for (pos = 0; pos >= 0; pos -= 1)
-//   // {                     // goes from 180 degrees to 0 degrees
-//   //   myservo.write(pos); // tell servo to go to position in variable 'pos'
-//   //   delay(20);          // waits 15 ms for the servo to reach the position
-//   // }
 // }

@@ -78,7 +78,7 @@ const int PUSH_BUTTON_PIN = 5;
 const unsigned long DEBOUNCE_DELAY = 500;
 
 // delay for the LED
-const unsigned long LED_DELAY = 500;
+const unsigned long LED_DELAY = 250;
 
 // rate for arduino
 const int BAUD_RATE = 9600;
@@ -114,7 +114,7 @@ private:
     int lineSensorBuffer[LINE_SENSOR_BUFFER_SIZE][NUM_LINE_SENSORS];
 
     // a 1D ARRAY of magnetic sensor values
-    int magneticSensorValues;//[NUM_MAGNETIC_SENSORS];
+    int magneticSensorValues; //[NUM_MAGNETIC_SENSORS];
 };
 
 class Actuator
@@ -188,11 +188,12 @@ private:
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
-            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
-            // {"turn_right", "end_0_f"},                   // Start to factory
-            //                                              // path contaminated and ending at contaminated area
-            // {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
+            // {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
+            // {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
+
+            {"turn_right", "end_0_f"},                   // Start to factory
+                                                         // path contaminated and ending at contaminated area
+            {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
 
             // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
 
@@ -224,6 +225,9 @@ private:
     // count how many loops to do the ending condition
     // this should be 0 when its not in an end chunk, and non zero when its counting end
     int endCounter;
+
+    // Global
+    int loopCounter;
 
     // this function checks if the button is pressed, and if so, toggle the isRunning state
     void toggleRunAgent();

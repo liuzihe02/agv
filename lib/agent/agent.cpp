@@ -48,6 +48,9 @@ void Agent::run()
         this->pathCounter = 0;
         // reset the end counter
         this->endCounter = 0;
+        // global clock
+        this->loopCounter = 0;
+
         actuator.stopMotor();
         this->actuator.clawServo.write(CLAW_OPEN_POS);
         // stop running if the status is false
@@ -97,8 +100,8 @@ void Agent::run()
             // move on to the next path here, right after the encCounter
             if (endCounter == endCounterCounts[pathCounter] + 1)
             {
-                //digitalWrite(LED_PIN, HIGH);
-                // move to the next path
+                // digitalWrite(LED_PIN, HIGH);
+                //  move to the next path
                 junctionCounter = 0;
                 pathCounter += 1;
                 // reset endCounter
@@ -131,6 +134,17 @@ void Agent::run()
             }
         };
 
+        if (loopCounter % LED_DELAY == 0)
+        {
+            if (loopCounter % (LED_DELAY * 2) == 0)
+            {
+                digitalWrite(LED_PIN_B, LOW);
+            }
+            else
+            {
+                digitalWrite(LED_PIN_B, HIGH);
+            }
+        }
         // Serial.println(motorPolicy);
 
         // move the motor after moving the claw
@@ -146,9 +160,11 @@ void Agent::run()
             // no delay
             String clawPolicy = policyClaw(allPaths[pathCounter], sensor.updateMagneticSensorReadings());
             // Serial.println(clawPolicy);
+            digitalWrite(LED_PIN_B, LOW);
             actuator.actClaw(clawPolicy);
             // Serial.println("Finished acting claw");
         }
+        loopCounter += 1;
     }
 }
 
@@ -397,23 +413,23 @@ String Agent::policyClaw(String *path, int magneticSensorValues)
     assert(endCounter > 0);
     // check whether to release or grab
     if (path[junctionCounter] == "end_0_f")
-    {   
+    {
         if (magneticSensorValues == 0)
         {
-            digitalWrite(LED_PIN_R, HIGH);
-            digitalWrite(LED_PIN_G, LOW);
-            //return "LED_off";
+            digitalWrite(LED_PIN_G, HIGH);
+            digitalWrite(LED_PIN_R, LOW);
+            // return "LED_off";
         }
         else if (magneticSensorValues == 1)
         {
             digitalWrite(LED_PIN_R, HIGH);
             digitalWrite(LED_PIN_G, LOW);
-            //return "LED_on";
+            // return "LED_on";
         }
         return "claw_grab";
     }
     else if (path[junctionCounter] == "end_c_c")
-    {   
+    {
         digitalWrite(LED_PIN_R, LOW);
         digitalWrite(LED_PIN_G, LOW);
         return "claw_release";
@@ -422,5 +438,5 @@ String Agent::policyClaw(String *path, int magneticSensorValues)
 
 String Agent::policyLED(int *magneticSensorValues)
 {
-    return "hello";// check for the FIRST magnetic sensor values only
+    return "hello"; // check for the FIRST magnetic sensor values only
 }
