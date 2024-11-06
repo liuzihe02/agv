@@ -179,7 +179,7 @@ private:
     // these are class variables
 
     // these are stuff related to the overall coordination of paths
-    static const int NUM_ROWS = 2;  // Number of paths
+    static const int NUM_ROWS = 5;  // Number of paths
     static const int NUM_COLS = 20; // Max number of junctions per path
                                     // all the paths stored as a 2D matrix
 
@@ -188,17 +188,15 @@ private:
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
             // path zero and ending at the factory
-            // {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_0_f"},
-            // {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c_c"},
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_s_f"},
+            // from factory to contaminated
+            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_f_c"},
+            // from contaminated back to factory
+            {"start_backward", "turn_right", "straight_forward", "turn_right", "straight_forward", "turn_right", "turn_right", "end_c_f"}
 
-            {"turn_right", "end_0_f"},                   // Start to factory
-                                                         // path contaminated and ending at contaminated area
-            {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
-
-            // {"turn_right", "turn_left", "turn_left", "turn_right", "end_f_turn_left"}, // Start to factory
-
-            // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_c"}, // Factory to disposal area
-            // {"start_backward", "turn_180_clockwise", "straight_forward", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // Disposal back to factory
+            // {"turn_right", "end_0_f"},                   // Start to factory
+            //                                              // path contaminated and ending at contaminated area
+            // {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
 
             // {"start_backward", "turn_right", "turn_right", "straight_forward","turn_right", "place_box"}, //Factory to B1
             // {"start_backward", "turn_right", "straight_forward", "turn_left", "end_f_turn_right"}, //B1 to Factory
@@ -214,7 +212,7 @@ private:
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {2000, 2000}; // Size determined manually
+    int const endCounterCounts[2] = {500, 500}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;

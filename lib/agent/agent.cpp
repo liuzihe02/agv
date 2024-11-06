@@ -412,7 +412,7 @@ String Agent::policyClaw(String *path, int magneticSensorValues)
     // make sure we are actually at the end
     assert(endCounter > 0);
     // check whether to release or grab
-    if (path[junctionCounter] == "end_0_f")
+    if (path[junctionCounter] == "end_s_f")
     {
         if (magneticSensorValues == 0)
         {
@@ -428,7 +428,7 @@ String Agent::policyClaw(String *path, int magneticSensorValues)
         }
         return "claw_grab";
     }
-    else if (path[junctionCounter] == "end_c_c")
+    else if (path[junctionCounter] == "end_f_c")
     {
         digitalWrite(LED_PIN_R, LOW);
         digitalWrite(LED_PIN_G, LOW);
