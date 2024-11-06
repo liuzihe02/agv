@@ -187,19 +187,18 @@ private:
     // these store the start instruction, list of decisions at the junctions, and the end conditions
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
-            // path zero and ending at the factory
-            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_s_f"},
-            // from factory to contaminated
-            {"start_backward", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_f_c"},
-            // from contaminated back to factory
-            {"start_backward", "turn_right", "straight_forward", "turn_right", "straight_forward", "turn_right", "turn_right", "end_c_f"}
-
             // {"turn_right", "end_0_f"},                   // Start to factory
             //                                              // path contaminated and ending at contaminated area
             // {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
+            // path zero and ending at the factory
+            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_s_f"},
+            // from factory to contaminated
+            {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_f_c"},
+            // from contaminated back to factory
+            {"start_backward", "turn_right", "straight_forward", "turn_right", "straight_forward", "turn_right", "turn_right", "end_c_f"},
 
-            // {"start_backward", "turn_right", "turn_right", "straight_forward","turn_right", "place_box"}, //Factory to B1
-            // {"start_backward", "turn_right", "straight_forward", "turn_left", "end_f_turn_right"}, //B1 to Factory
+            {"start_backward", "turn_right", "turn_right", "straight_forward", "turn_right", "end_f_b1"}, // Factory to B1
+            {"start_backward", "turn_right", "straight_forward", "turn_left", "end_b1_f"},                // B1 to Factory
 
             // {"start_backward", "turn_right", "turn_left", "turn_left", "place_box"}, // Factory to B2;
             // {"start_backward", "turn_left", "turn_right", "end_f_turn_right"}, // B2 to factory
@@ -212,7 +211,7 @@ private:
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[2] = {500, 500}; // Size determined manually
+    int const endCounterCounts[NUM_ROWS] = {500, 500, 500, 500, 500}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;
