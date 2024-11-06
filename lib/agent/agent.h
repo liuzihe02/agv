@@ -234,7 +234,7 @@ private:
     // returns a struct (tuple) of (String,boolean)
     String policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *path);
     // policy for claw
-    String policyClaw(String *path, int *magneticSensorValues);
+    String policyClaw(String *path, int magneticSensorValues);
     // policy to decide how LED lights up
     String policyLED(int *magneticSensorValues);
 

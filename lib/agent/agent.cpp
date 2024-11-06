@@ -391,20 +391,20 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
     return "step_forward"; // Keep going forward until it finds a line
 }
 
-String Agent::policyClaw(String *path, int *magneticSensorValues)
+String Agent::policyClaw(String *path, int magneticSensorValues)
 {
     // make sure we are actually at the end
     assert(endCounter > 0);
     // check whether to release or grab
     if (path[junctionCounter] == "end_0_f")
     {   
-        if (magneticSensorValues[0] == 0)
+        if (magneticSensorValues == 0)
         {
             digitalWrite(LED_PIN_R, HIGH);
             digitalWrite(LED_PIN_G, LOW);
             //return "LED_off";
         }
-        else if (magneticSensorValues[0] == 1)
+        else if (magneticSensorValues == 1)
         {
             digitalWrite(LED_PIN_R, HIGH);
             digitalWrite(LED_PIN_G, LOW);
