@@ -2,7 +2,7 @@
 
 An Arduino-based autonomous delivery robot that navigates a toy environment to collect and deliver packages to designated locations.
 
-<img src="robot.jpg" width=300>
+<img src="images/robot.jpg" width=300>
 
 ## System Overview
 
@@ -45,7 +45,7 @@ The codebase follows an object-oriented design with three main classes:
 - Maintains buffer of historical sensor values
 - Line sensor setup:
 
-<img src="lineSensors.png" width=400>
+<img src="images/lineSensors.png" width=400>
 
 ### Actuator Class
 - Controls DC motors for movement
