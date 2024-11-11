@@ -52,7 +52,7 @@ const int LINE_SENSOR_PINS[NUM_LINE_SENSORS] = {
 
 // How many time steps to store previous line sensor values
 // around 20 works
-const int LINE_SENSOR_BUFFER_SIZE = 13;
+const int LINE_SENSOR_BUFFER_SIZE = 15;
 
 // placement for where the magnetic sensor pins go
 const int MAGNETIC_SENSOR_PINS = 6; // or 7
@@ -65,7 +65,7 @@ const int CLAW_PIN = 13;
 
 // default claw opening and closing positions, note that close may not be zero
 const int CLAW_OPEN_POS = 180;
-const int CLAW_CLOSE_POS = 152;
+const int CLAW_CLOSE_POS = 147;
 
 // LED pin
 const int LED_PIN_B = 4;
@@ -78,7 +78,7 @@ const int PUSH_BUTTON_PIN = 5;
 const unsigned long DEBOUNCE_DELAY = 500;
 
 // delay for the LED
-const unsigned long LED_DELAY = 250;
+const unsigned long LED_DELAY = 150;
 
 // rate for arduino
 const int BAUD_RATE = 9600;
@@ -187,31 +187,32 @@ private:
     // these store the start instruction, list of decisions at the junctions, and the end conditions
     String allPaths[NUM_ROWS][NUM_COLS] =
         {
-            // {"turn_right", "end_0_f"},                   // Start to factory
+            // {"turn_forward_right", "end_0_f"},                   // Start to factory
             //                                              // path contaminated and ending at contaminated area
-            // {"start_backward", "turn_right", "end_c_c"}, // Factory to disposal area
+            // {"start_backward", "turn_forward_right", "end_c_c"}, // Factory to disposal area
             // path zero and ending at the factory
-            {"turn_right", "turn_left", "turn_left", "turn_right", "turn_left", "end_s_f"},
+            {"turn_forward_right", "turn_forward_left", "turn_forward_left", "turn_forward_right", "turn_forward_left", "end_s_f"},
             // from factory to contaminated
-            {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward", "straight_forward", "end_f_c"},
+            {"start_backward", "turn_backward_right", "turn_forward_right", "straight_forward", "straight_forward", "straight_forward", "end_f_c"},
             // from contaminated back to factory
-            {"start_backward", "turn_right", "straight_forward", "turn_right", "straight_forward", "turn_right", "turn_right", "end_c_f"},
+            {"start_backward", "turn_backward_right", "straight_forward", "turn_forward_right", "straight_forward", "turn_forward_right", "turn_forward_right", "end_c_f"},
+            // from factory to b1
+            {"start_backward", "turn_backward_right", "turn_forward_right", "straight_forward", "turn_forward_right", "end_f_b1"},
+            // from b1 to factory
+            {"start_backward", "turn_backward_right", "straight_forward", "turn_forward_left", "end_b1_f"},
 
-            {"start_backward", "turn_right", "turn_right", "straight_forward", "turn_right", "end_f_b1"}, // Factory to B1
-            {"start_backward", "turn_right", "straight_forward", "turn_left", "end_b1_f"},                // B1 to Factory
+            // {"start_backward", "turn_forward_right", "turn_forward_left", "turn_forward_left", "place_box"}, // Factory to B2;
+            // {"start_backward", "turn_forward_left", "turn_forward_right", "end_f_turn_forward_right"}, // B2 to factory
 
-            // {"start_backward", "turn_right", "turn_left", "turn_left", "place_box"}, // Factory to B2;
-            // {"start_backward", "turn_left", "turn_right", "end_f_turn_right"}, // B2 to factory
+            // {"start_backward", "turn_forward_right", "turn_forward_right", "straight_forward", "straight_forward","turn_forward_right", "place_box"}, // Factory to B3
+            // {"start_backward", "turn_forward_right", "straight_forward", "straight_forward", "turn_forward_left", "end_f_turn_forward_right"}, // B3 to Factory
 
-            // {"start_backward", "turn_right", "turn_right", "straight_forward", "straight_forward","turn_right", "place_box"}, // Factory to B3
-            // {"start_backward", "turn_right", "straight_forward", "straight_forward", "turn_left", "end_f_turn_right"}, // B3 to Factory
-
-            // {"start_backward", "turn_right", "turn_left", "straight_forward", "turn_left", "place_box"}, // Factory to B4
-            // {"start_backward", "turn_left", "straight_forward", "turn_right", "end_f_turn_right"}, // B4 to Factory
+            // {"start_backward", "turn_forward_right", "turn_forward_left", "straight_forward", "turn_forward_left", "place_box"}, // Factory to B4
+            // {"start_backward", "turn_forward_left", "straight_forward", "turn_forward_right", "end_f_turn_forward_right"}, // B4 to Factory
     };
 
     // each of this number represents how many loops to go forward for
-    int const endCounterCounts[NUM_ROWS] = {500, 500, 500, 500, 500}; // Size determined manually
+    int const endCounterCounts[NUM_ROWS] = {500, 500, 500, 200, 500}; // Size determined manually
 
     // Counts up which junction we are on in the specific path, incremented whenever a junction is detected.
     int junctionCounter;

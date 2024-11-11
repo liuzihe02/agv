@@ -375,7 +375,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             // digitalWrite(LED_PIN, LOW);
-            return "turn_right";
+            return "turn_forward_right";
         }
         // continue previous action and wait for consistent readings
         else
@@ -392,7 +392,7 @@ String Agent::policyMotor(int (*lineSensorBuffer)[NUM_LINE_SENSORS], String *pat
         if (isBufferConsistent(lineSensorBuffer))
         {
             // digitalWrite(LED_PIN, LOW);
-            return "turn_left";
+            return "turn_forward_left";
         }
         // continue previous action and wait for consistent readings
         else

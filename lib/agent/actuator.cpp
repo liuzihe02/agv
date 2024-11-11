@@ -114,22 +114,22 @@ void Actuator::actMotorStep(String policy)
     {
         // need to make it go clockwise
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(100);
+        leftMotor->setSpeed(125);
         // leftMotor->run(RELEASE);
         // leftMotor->setSpeed(0);
 
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(200);
+        rightMotor->setSpeed(250);
         return;
     }
     else if (policy == "step_backward_anticlockwise")
     {
         // need to make it go anti clockwise
         leftMotor->run(BACKWARD);
-        leftMotor->setSpeed(200);
+        leftMotor->setSpeed(250);
 
         rightMotor->run(BACKWARD);
-        rightMotor->setSpeed(100);
+        rightMotor->setSpeed(125);
         // rightMotor->run(RELEASE);
         // rightMotor->setSpeed(0);
         return;
@@ -142,7 +142,7 @@ void Actuator::actMotorStep(String policy)
 
 void Actuator::actMotorTurn(String policy)
 {
-    if (policy == "turn_left")
+    if (policy == "turn_forward_left")
     {
         // just delay to see lag
         leftMotor->run(RELEASE);
@@ -159,7 +159,7 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(60);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(250);
-        delay(1670);
+        delay(1585);
 
         // delay again
         leftMotor->run(RELEASE);
@@ -173,12 +173,13 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(200);
-        delay(200);
+        delay(100);
         return;
     }
 
-    if (policy == "turn_right")
+    if (policy == "turn_forward_right")
     {
+        // digitalWrite(LED_PIN_R, HIGH);
         // just delay to see lag
         leftMotor->run(RELEASE);
         leftMotor->setSpeed(0);
@@ -192,7 +193,7 @@ void Actuator::actMotorTurn(String policy)
         rightMotor->setSpeed(70);
         leftMotor->run(FORWARD);
         leftMotor->setSpeed(250);
-        delay(1645);
+        delay(1633);
 
         // delay again
         leftMotor->run(RELEASE);
@@ -206,7 +207,44 @@ void Actuator::actMotorTurn(String policy)
         leftMotor->setSpeed(200);
         rightMotor->run(FORWARD);
         rightMotor->setSpeed(200);
-        delay(200);
+        delay(100);
+        // digitalWrite(LED_PIN_R, LOW);
+        return;
+    }
+
+    if (policy == "turn_backward_right")
+    {
+        // digitalWrite(LED_PIN_B, HIGH);
+        // just delay to see lag
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1800);
+
+        // TODO: ALWAYS need to recalibrate this
+        //  keep right stationary and turn left only
+        // more delay for backwards right
+        rightMotor->run(BACKWARD);
+        rightMotor->setSpeed(65);
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(250);
+        delay(2000);
+
+        // delay again
+        leftMotor->run(RELEASE);
+        leftMotor->setSpeed(0);
+        rightMotor->run(RELEASE);
+        rightMotor->setSpeed(0);
+        delay(1800);
+
+        // go forward by a little bit, ignore blue crosses
+        leftMotor->run(FORWARD);
+        leftMotor->setSpeed(200);
+        rightMotor->run(FORWARD);
+        rightMotor->setSpeed(200);
+        delay(100);
+        // digitalWrite(LED_PIN_B, LOW);
         return;
     }
 }
@@ -280,6 +318,6 @@ void Actuator::actLED(String policy)
         digitalWrite(LED_PIN_R, LOW);
         digitalWrite(LED_PIN_G, HIGH);
     }
-    
+
     // not implemented yet
 }
