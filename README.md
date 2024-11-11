@@ -2,6 +2,8 @@
 
 An Arduino-based autonomous delivery robot that navigates a toy environment to collect and deliver packages to designated locations.
 
+<img src="robot.jpg" width=300>
+
 ## System Overview
 
 ### System Diagram
